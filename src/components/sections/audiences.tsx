@@ -15,7 +15,7 @@ export function Audiences() {
     <section
       data-zone-skin="noche"
       data-zone-wa="publico"
-      className="section"
+      className="section cv"
       aria-labelledby="publico-titulo"
     >
       <div className="wrap">

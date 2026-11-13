@@ -13,7 +13,7 @@ export function Studio() {
       tabIndex={-1}
       data-zone-skin="crema"
       data-zone-wa="estudio"
-      className="section outline-none"
+      className="section cv outline-none"
       aria-labelledby="estudio-titulo"
     >
       <div className="wrap">

@@ -213,6 +213,14 @@ html.lenis body {
   padding-block: var(--section);
 }
 
+/* Secciones debajo del pliegue: el navegador no calcula su estilo, su layout
+   ni su pintura hasta que se acercan a la pantalla. Abarata la carga y cada
+   cambio de piel (que recalcula todo lo que esté renderizado). */
+.cv {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 56rem;
+}
+
 .grid-12 {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));

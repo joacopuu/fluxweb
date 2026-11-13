@@ -17,7 +17,7 @@ export function Contact() {
       data-zone-skin="noche"
       data-zone-wa="contacto"
       data-fab-hide
-      className="section outline-none"
+      className="section cv outline-none"
       aria-labelledby="contacto-titulo"
     >
       <div className="wrap">

@@ -282,7 +282,7 @@ Texto completo en `src/content/cases.ts`.
   1. *Que el producto se vea funcionando.* La página abre con la tableta en 3D, efervesciendo en el agua. No hay foto de envase: hay producto en acción.
   2. *El problema, en tres capítulos.* La industria de la limpieza transporta agua. La envasa en plástico de un solo uso. Y después se dosifica a ojo. Se apilan al scrollear.
   3. *La evidencia, en pantalla.* El ensayo de poder bactericida bajo norma EN 13697 está en la página, con institución, protocolo y resultados.
-  4. *Verde petróleo y menta.* Paleta de laboratorio: oscura, precisa y con un solo acento.
+  4. *Verde petróleo y menta.* Una paleta de laboratorio: oscura y con un solo acento.
 - **Detalles:** "Una barra que lo dice todo" · "El mismo trabajo, en barras" · "No es una promesa, está medido" · "Protocolos sin cálculo intermedio" · "En el celular pega igual"
 - **Hicimos:** arquitectura del argumento, sitio de producto, pedido de cotización.
 

@@ -183,7 +183,7 @@ export function TiltedGridHero({
     }
   }, [images, layout, sizes]);
 
-  const { columns, sweep, unit, pitchPx, maxW, slices: SLICES } =
+  const { columns, sweep, unit, limit, pitchPx, maxW, slices: SLICES } =
     layout ?? measure(1200, 560, tileHeight, aspectRatio, gap, bend);
   const duration = columns * speed;
 
@@ -202,7 +202,26 @@ export function TiltedGridHero({
     // Ventaja en el reloj, para poder arrastrar hacia atrás.
     const lapMs = duration * 1000;
     for (const a of list) a.currentTime = Number(a.currentTime ?? 0) + HEADROOM_LAPS * lapMs;
+
+    // Oculta las baldosas que están fuera de cuadro (las que dan la vuelta por
+    // detrás de la cámara). El original lo hacía animando `visibility`, lo que
+    // obligaba al hilo principal a trabajar en cada cuadro; acá se revisa unas
+    // pocas veces por segundo leyendo el reloj de cada animación.
+    const hidden = new WeakMap<Element, boolean>();
+    const cull = () => {
+      for (const a of list) {
+        const el = (a.effect as KeyframeEffect | null)?.target as HTMLElement | null;
+        const progress = a.effect?.getComputedTiming().progress;
+        if (!el || progress == null) continue;
+        const out = Math.abs(-sweep + 2 * sweep * progress) > limit + 5;
+        if (hidden.get(el) === out) continue;
+        hidden.set(el, out);
+        el.style.visibility = out ? "hidden" : "visible";
+      }
+    };
+    cull();
     if (reduce) return;
+    const culler = window.setInterval(cull, 180);
 
     const msPerPx = (speed * 1000) / Math.max(1, pitchPx);
     let raf = 0;
@@ -217,6 +236,7 @@ export function TiltedGridHero({
     };
     const shift = (ms: number) => {
       for (const a of tiles()) a.currentTime = Math.max(lapMs, Number(a.currentTime ?? 0) + ms);
+      cull();
     };
 
     // Arranque: llega rápido y frena hasta la velocidad de crucero. En pasos
@@ -227,6 +247,7 @@ export function TiltedGridHero({
       const t = Math.min(1, (performance.now() - started) / 1800);
       const eased = 1 - Math.pow(1 - t, 3);
       if (!dragging) setRate(6 - 5 * eased);
+      cull();
       if (t >= 1 || dragging) window.clearInterval(introTimer);
     }, 110);
     setRate(6);
@@ -293,13 +314,14 @@ export function TiltedGridHero({
     return () => {
       cancelAnimationFrame(raf);
       window.clearInterval(introTimer);
+      window.clearInterval(culler);
       visibility.disconnect();
       band.removeEventListener("pointerdown", down);
       band.removeEventListener("pointermove", move);
       band.removeEventListener("pointerup", up);
       band.removeEventListener("pointercancel", up);
     };
-  }, [layout, orbit, duration, speed, pitchPx]);
+  }, [layout, orbit, duration, speed, pitchPx, sweep, limit]);
 
   // Toda medida es un múltiplo del alto de la baldosa.
   const u = (n: number) =>
@@ -314,9 +336,9 @@ export function TiltedGridHero({
 
   // Cambio nuestro: el original además animaba `visibility` para ocultar las
   // baldosas fuera de cuadro. Esa propiedad no corre en el compositor y
-  // obligaba al hilo principal a producir un cuadro por vsync. Más allá de
-  // `limit` la baldosa ya se proyecta fuera del cuadro, así que alcanza con
-  // transform: la animación queda entera en el compositor.
+  // obligaba al hilo principal a producir un cuadro por vsync. Acá los
+  // keyframes solo llevan transform (la animación queda entera en el
+  // compositor) y el ocultado lo hace `cull`, más arriba.
   const css =
     `@keyframes ${orbit}{from{transform:${turn(-sweep)}}to{transform:${turn(sweep)}}}` +
     // Con movimiento reducido se pausa en vez de quitarse: cada baldosa ya
@@ -390,6 +412,12 @@ export function TiltedGridHero({
                     width: k === SLICES - 1 ? u(share) : `calc(${u(share)} + 1px)`,
                     height: u(1),
                     transform: turn((aspectRatio / 2 - (k + 0.5) * share) * unit),
+                    // Reemplaza a la animación de `visibility` del original:
+                    // una tira que ya dio la vuelta queda de espaldas y no se
+                    // pinta. Sin esto, WebKit proyecta espejadas en el centro
+                    // las baldosas que pasaron por detrás de la cámara.
+                    backfaceVisibility: "hidden",
+                    WebkitBackfaceVisibility: "hidden",
                   }}
                 >
                   {img ? (

@@ -21,7 +21,7 @@ const ext = { target: "_blank", rel: "noopener noreferrer" } as const;
 
 export function Footer() {
   return (
-    <footer data-zone-skin="oliva" data-zone-wa="contacto" data-fab-hide className="pb-8 pt-[var(--section)]">
+    <footer data-zone-skin="oliva" data-zone-wa="contacto" data-fab-hide className="cv pb-8 pt-[var(--section)]">
       <div className="wrap">
         <MaskReveal as="p" className="t-mega !text-[clamp(2.6rem,10.4vw,9.5rem)]">
           Tenés la idea. Falta <em>escribirnos</em>.

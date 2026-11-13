@@ -236,7 +236,7 @@ export const cases: CaseStudy[] = [
       },
       {
         title: "Verde petróleo y menta",
-        body: "Una paleta de laboratorio: oscura, precisa y con un solo acento. Tampoco se parece a FluxWeb.",
+        body: "Una paleta de laboratorio: oscura y con un solo acento. Tampoco se parece a FluxWeb.",
       },
     ],
     details: [
@@ -272,7 +272,7 @@ export const cases: CaseStudy[] = [
         body: "¿Cuántos usos entran en un camión? El número sube mientras lo mirás. Es la forma más corta de mostrar qué significa dejar de transportar agua.",
         shot: desk(
           "/work/beclean/camion.webp",
-          "Final del comparador de BeClean con un contador de usos por camión de más de tres millones, en menta.",
+          "Final del comparador de BeClean con un contador de usos por camión de alrededor de tres millones, en menta.",
         ),
         layout: "derecha",
       },

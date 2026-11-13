@@ -27,15 +27,15 @@ export function WorkIntro() {
 function Chapter({ item, flip }: { item: CaseStudy; flip: boolean }) {
   const href = `/trabajos/${item.slug}`;
   return (
-    <section data-zone-skin={item.skin} data-zone-wa={item.wa} className="section" aria-labelledby={`caso-${item.slug}`}>
+    <section data-zone-skin={item.skin} data-zone-wa={item.wa} className="section cv" aria-labelledby={`caso-${item.slug}`}>
       <div className="wrap grid-12 items-center gap-y-14">
         <div className={cn("col-span-12 lg:col-span-5", flip ? "lg:order-2 lg:col-start-8" : "")}>
-          <p className="t-small text-muted">
-            {item.kind}. {item.place}.
-          </p>
-          <h3 id={`caso-${item.slug}`} className="t-client mt-3">
+          <h3 id={`caso-${item.slug}`} className="t-client">
             {item.name}
           </h3>
+          <p className="t-small mt-4 text-muted">
+            {item.kind}. {item.place}.
+          </p>
           <p className="t-lead mt-6 max-w-[38ch]">{item.summary}</p>
           <ul className="mt-8 border-t border-line">
             {item.highlights.map((line) => (
@@ -139,7 +139,7 @@ export function WorkChapters() {
 /** El tercer trabajo es el sitio que se está recorriendo. */
 export function WorkOutro({ hasCase }: { hasCase: boolean }) {
   return (
-    <section data-zone-skin="tinta" data-zone-wa="fluxweb" className="wrap py-[clamp(5rem,11vw,10rem)]">
+    <section data-zone-skin="tinta" data-zone-wa="fluxweb" className="wrap cv py-[clamp(5rem,11vw,10rem)]">
       <p className="t-title max-w-[22ch]">
         El tercero lo estás recorriendo. Este sitio también lo hicimos <em>nosotros</em>.
       </p>

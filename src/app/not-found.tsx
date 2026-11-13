@@ -18,8 +18,7 @@ export default function NotFound() {
     >
       <Mark className="pointer-events-none absolute -right-[12%] top-1/2 h-[120%] w-auto -translate-y-1/2 text-raise" />
       <div className="wrap relative">
-        <p className="t-mono text-muted">Error 404</p>
-        <h1 className="t-mega mt-4 max-w-[9ch]">
+        <h1 className="t-mega max-w-[9ch]">
           Esta página no <em>existe</em>.
         </h1>
         <p className="t-lead mt-8 max-w-[38ch] text-muted">
@@ -36,6 +35,7 @@ export default function NotFound() {
             Avisarnos por WhatsApp
           </WaLink>
         </div>
+        <p className="t-mono mt-12 text-muted">Error 404</p>
       </div>
     </main>
   );

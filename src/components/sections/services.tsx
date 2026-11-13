@@ -159,7 +159,7 @@ export function Services() {
       tabIndex={-1}
       data-zone-skin="crema"
       data-zone-wa="servicios"
-      className="section outline-none"
+      className="section cv outline-none"
       aria-labelledby="servicios-titulo"
     >
       <div className="wrap">

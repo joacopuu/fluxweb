@@ -55,7 +55,9 @@ function Framed({ shot, host, sizes, priority }: { shot: Shot; host: string; siz
 function Detail({ detail, host }: { detail: CaseDetail; host: string }) {
   const text = (
     <>
-      <h3 className="t-client-sub">{detail.title}</h3>
+      <h3 className="text-[clamp(1.375rem,2.2vw,2rem)] font-semibold leading-[1.1] tracking-[-0.03em]">
+        {detail.title}
+      </h3>
       <p className="t-lead mt-5 max-w-[40ch] text-muted">{detail.body}</p>
     </>
   );
@@ -127,10 +129,10 @@ export default async function CasePage({ params }: PageProps<"/trabajos/[slug]">
         </Link>
         <div className="grid-12 mt-[clamp(2rem,5vw,4rem)] items-end gap-y-6">
           <div className="col-span-12 lg:col-span-8">
-            <p className="t-small text-muted">
+            <h1 className="t-client">{item.name}</h1>
+            <p className="t-small mt-4 text-muted">
               {item.kind}. {item.place}. {item.year}.
             </p>
-            <h1 className="t-client mt-3">{item.name}</h1>
           </div>
           <p className="t-lead col-span-12 text-muted lg:col-span-4">{item.lead}</p>
         </div>
@@ -189,10 +191,10 @@ export default async function CasePage({ params }: PageProps<"/trabajos/[slug]">
       </section>
 
       <section className="wrap pb-[var(--section)]" aria-labelledby="detalles">
-        <h2 id="detalles" className="t-small text-muted">
+        <h2 id="detalles" className="t-client-sub max-w-[20ch]">
           Los detalles de los que estamos orgullosos
         </h2>
-        <ul className="mt-10 flex flex-col gap-[clamp(5rem,12vw,10rem)]">
+        <ul className="mt-[clamp(3rem,7vw,6rem)] flex flex-col gap-[clamp(5rem,12vw,10rem)]">
           {item.details.map((detail) => (
             <Detail key={detail.title} detail={detail} host={host} />
           ))}

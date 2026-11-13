@@ -92,20 +92,33 @@ export function Process() {
       });
     };
 
-    build();
     let cancelled = false;
-    scrollKit().then((loaded) => {
-      if (cancelled) return;
-      kit = loaded;
-      build();
-    });
+    let started = false;
     const observer = new ResizeObserver(() => {
       build();
       kit?.ScrollTrigger.refresh();
     });
-    observer.observe(list);
+    // Medir la lista obliga a calcular su layout: se hace cuando falta una
+    // pantalla para verla, no al cargar la página.
+    const near = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting || started) return;
+        started = true;
+        near.disconnect();
+        build();
+        observer.observe(list);
+        scrollKit().then((loaded) => {
+          if (cancelled) return;
+          kit = loaded;
+          build();
+        });
+      },
+      { rootMargin: "100% 0px" },
+    );
+    near.observe(list);
     return () => {
       cancelled = true;
+      near.disconnect();
       observer.disconnect();
       triggers.forEach((t) => t.kill());
     };
@@ -117,7 +130,7 @@ export function Process() {
       tabIndex={-1}
       data-zone-skin="tinta"
       data-zone-wa="proceso"
-      className="section outline-none"
+      className="section cv outline-none"
       aria-labelledby="proceso-titulo"
     >
       <div className="wrap">
@@ -151,10 +164,10 @@ export function Process() {
                     : "min-[900px]:col-span-6 min-[900px]:col-start-7 min-[900px]:pl-[8%]",
                 )}
               >
-                <p className="t-small text-muted">
+                <h3 className="t-title">{stage.name}</h3>
+                <p className="t-small mt-2 text-muted">
                   Etapa {i + 1} de {stages.length}. <span className="text-accent">{stage.time}.</span>
                 </p>
-                <h3 className="t-title mt-2">{stage.name}</h3>
                 <p className="t-lead mt-4 max-w-[36ch]">{stage.body}</p>
                 <p className="t-body mt-5 max-w-[40ch] border-t border-line pt-4 text-muted">
                   <span className="font-medium text-ink">Recibís:</span> {stage.get}

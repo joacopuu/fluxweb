@@ -40,10 +40,19 @@ export function SmoothScroll() {
     lenis = instance;
     let alive = true;
     let gsap: Gsap | null = null;
+    let heights: ResizeObserver | null = null;
     scrollKit().then((kit) => {
       if (!alive) return;
       gsap = kit.gsap;
       instance?.on("scroll", kit.ScrollTrigger.update);
+      // Cuando una sección se renderiza por primera vez cambia el alto del
+      // documento: ScrollTrigger tiene que volver a medir.
+      let timer = 0;
+      heights = new ResizeObserver(() => {
+        window.clearTimeout(timer);
+        timer = window.setTimeout(() => kit.ScrollTrigger.refresh(), 200);
+      });
+      heights.observe(document.body);
     });
 
     let raf = 0;
@@ -79,7 +88,17 @@ export function SmoothScroll() {
       event.preventDefault();
       history.pushState(null, "", url.hash);
       wake();
-      instance.scrollTo(target, { offset: -72, duration: 1.2 });
+      instance.scrollTo(target, {
+        offset: -72,
+        duration: 1.2,
+        // Las secciones que todavía no se habían renderizado ocupan una altura
+        // estimada: si al llegar el destino quedó corrido, se ajusta.
+        onComplete: () => {
+          if (Math.abs(target.getBoundingClientRect().top - 72) > 8) {
+            instance.scrollTo(target, { offset: -72, duration: 0.5 });
+          }
+        },
+      });
       target.focus({ preventScroll: true });
     };
     document.addEventListener("click", onClick);
@@ -89,6 +108,7 @@ export function SmoothScroll() {
       events.forEach((name) => window.removeEventListener(name, wake, { capture: true }));
       cancelAnimationFrame(raf);
       alive = false;
+      heights?.disconnect();
       wakeLoop = null;
       instance?.destroy();
       lenis = null;

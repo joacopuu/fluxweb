@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 export function Faq() {
   const [open, setOpen] = useState<number | null>(0);
   return (
-    <section data-zone-skin="tinta" data-zone-wa="preguntas" className="section" aria-labelledby="preguntas-titulo">
+    <section data-zone-skin="tinta" data-zone-wa="preguntas" className="section cv" aria-labelledby="preguntas-titulo">
       <div className="wrap grid-12 gap-y-10">
         <div className="col-span-12 lg:col-span-4">
           <div className="lg:sticky lg:top-28">
