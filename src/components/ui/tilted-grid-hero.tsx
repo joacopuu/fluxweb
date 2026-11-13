@@ -51,7 +51,7 @@ function arc(bend: number) {
 // Una baldosa nunca ocupa más que esta parte del ancho. En un teléfono se
 // siguen viendo las vecinas; en escritorio entran tres o cuatro de frente.
 function maxTileWidth(width: number) {
-  if (width < 640) return 66;
+  if (width < 640) return 84;
   if (width < 1100) return 46;
   return 34;
 }

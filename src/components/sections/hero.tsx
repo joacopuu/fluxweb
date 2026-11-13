@@ -46,11 +46,13 @@ export function Hero() {
             className="t-body fade-in col-span-12 max-w-[34rem] text-muted md:col-span-6 lg:col-span-4"
             style={{ "--d": "700ms" } as React.CSSProperties}
           >
-            FluxWeb es un estudio de diseño y desarrollo web de Córdoba. Somos tres, y cada sitio lo
-            diseñamos y lo programamos desde cero.
+            FluxWeb es un estudio de diseño y desarrollo web de Córdoba.{" "}
+            <span className="max-sm:hidden">
+              Somos tres, y cada sitio lo diseñamos y lo programamos desde cero.
+            </span>
           </p>
           <div
-            className="fade-in col-span-12 flex flex-wrap items-center gap-3 md:col-span-6 md:justify-end lg:col-span-7 lg:col-start-6 lg:justify-start"
+            className="fade-in col-span-12 flex flex-wrap items-center gap-2.5 max-sm:[&_.btn]:px-4 max-sm:[&_.btn]:text-[0.9375rem] md:col-span-6 md:justify-end lg:col-span-7 lg:col-start-6 lg:justify-start"
             style={{ "--d": "850ms" } as React.CSSProperties}
           >
             <Magnetic>
@@ -76,7 +78,7 @@ export function Hero() {
         curve={74}
         fade={10}
         cursorLabel="Arrastrá"
-        className="fade-in mt-[clamp(1.5rem,4svh,3rem)] min-h-[15rem] w-full flex-1 basis-[clamp(15rem,40svh,30rem)]"
+        className="fade-in mt-[clamp(1.25rem,4svh,3rem)] min-h-[15rem] w-full flex-1 basis-[clamp(15rem,40svh,30rem)]"
         style={{ "--d": "500ms" } as React.CSSProperties}
       />
 

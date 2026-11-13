@@ -8,9 +8,9 @@ import { MaskReveal } from "@/components/ui/mask-reveal";
 import { Magnetic } from "@/components/ui/magnetic";
 import { WaLink } from "@/components/ui/wa-link";
 
-function Column({ title, children }: { title: string; children: React.ReactNode }) {
+function Column({ title, children, wide }: { title: string; children: React.ReactNode; wide?: boolean }) {
   return (
-    <div>
+    <div className={wide ? "max-md:col-span-2" : undefined}>
       <h3 className="t-small mb-4 font-medium text-muted">{title}</h3>
       <ul className="flex flex-col gap-2.5 text-[0.9375rem]">{children}</ul>
     </div>
@@ -53,7 +53,18 @@ export function Footer() {
               </Link>
             </li>
           </Column>
-          <Column title="Estudio">
+          <Column title="Trabajos en línea">
+            {cases.map((item) =>
+              item.live ? (
+                <li key={item.slug}>
+                  <a href={item.live.url} className="link" {...ext}>
+                    {item.live.host}
+                  </a>
+                </li>
+              ) : null,
+            )}
+          </Column>
+          <Column title="Estudio" wide>
             <li>
               <a href={site.instagram.url} className="link" {...ext}>
                 Instagram {site.instagram.handle}
@@ -67,20 +78,9 @@ export function Footer() {
               </li>
             ))}
           </Column>
-          <Column title="Trabajos en línea">
-            {cases.map((item) =>
-              item.live ? (
-                <li key={item.slug}>
-                  <a href={item.live.url} className="link" {...ext}>
-                    {item.live.host}
-                  </a>
-                </li>
-              ) : null,
-            )}
-          </Column>
-          <Column title="Contacto">
+          <Column title="Contacto" wide>
             <li>
-              <a href={`mailto:${site.email}`} className="link break-all">
+              <a href={`mailto:${site.email}`} className="link">
                 {site.email}
               </a>
             </li>
