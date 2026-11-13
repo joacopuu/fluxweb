@@ -34,7 +34,7 @@ Diseñamos proyectos que
 
 ## 3. Trabajos
 
-**Dos sitios en línea. No se parecen entre sí, y ninguno se parece a *nosotros*.**
+**Dos sitios en línea. No se parecen entre sí, y ninguno se parece a *nosotros*.** (el número sale de los casos cargados)
 
 Mirande es pizarra y crema, con fotos del valle. BeClean es verde petróleo y menta, con una tableta en 3D. Fijate cómo cambia esta página cuando entrás a cada uno.
 
@@ -288,9 +288,16 @@ Texto completo en `src/content/cases.ts`.
 
 ### FluxWeb (este sitio)
 
-- **Bajada:** El portfolio del estudio, hecho como le hacemos los sitios a los clientes.
-- **El problema:** El portfolio anterior decía que cada sitio se parece a su cliente. Este lo tiene que demostrar.
-- **Qué decidimos:** que la página cambie de piel en cada caso, que los trabajos sean lo primero que se ve, y que WhatsApp esté siempre a mano sin molestar.
+- **Bajada:** El portfolio del estudio, hecho como les hacemos los sitios a los clientes.
+- **El problema:** El portfolio anterior decía que cada sitio se parece a su cliente. Este lo tenía que demostrar. Y faltaban cosas básicas: WhatsApp a mano, casos contados en serio y una imagen al compartir el link.
+- **Qué decidimos y por qué:**
+  1. *Que la página cambie de piel.* Cuando entrás a Mirande, el sitio entero pasa a pizarra y crema. En BeClean, a verde petróleo y menta. Fondo, texto, acento y navegación cambian juntos. Es el argumento del estudio, mostrado en vez de dicho.
+  2. *Los trabajos primero.* El hero no nos muestra a nosotros. Muestra pantallas de sitios que están en línea, corriendo por dentro de un cilindro que se puede arrastrar.
+  3. *WhatsApp a mano, sin molestar.* Un botón en la navegación y uno flotante en el celular. El mensaje ya viene escrito según la sección desde la que lo tocás. Sin ventanas emergentes.
+  4. *Rápido antes que vistoso.* Lo que no hace falta al cargar, no se carga. El portal, el formulario y las animaciones de scroll llegan cuando se necesitan.
+- **Detalles:** "Se entra por una letra" · "La piel de cada cliente" · "Las automatizaciones, en su lugar" · "Te contestamos lo que ya estás pensando" · "Pensado desde el celular"
+- **Hicimos:** concepto y dirección de arte, sistema de diseño y de motion, todo el texto del sitio, desarrollo y performance.
+- **Puerta al contacto:** ¿Querés un sitio con este nivel de detalle?
 
 ---
 

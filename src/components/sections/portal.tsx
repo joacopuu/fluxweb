@@ -5,6 +5,8 @@ import GlyphPortal from "@/components/ui/glyph-portal";
 import { setSkin } from "@/lib/zones";
 
 const FALLBACK = "Georgia, 'Times New Roman', serif";
+/** Recorrido del portal, en alturas de pantalla. */
+const SCROLL_LENGTH = 2.6;
 
 /**
  * El portal tipográfico: «Diseñamos proyectos que FLUYEN». Al bajar, la cámara
@@ -23,6 +25,13 @@ export function Portal({ children }: { children: ReactNode }) {
   const [near, setNear] = useState(false);
 
   useEffect(() => {
+    // Reserva desde el arranque el alto que va a ocupar el portal (su recorrido
+    // más la pantalla de contenido), para que montarlo no corra lo que sigue:
+    // si alguien salta a "Servicios" desde arriba, el destino no se mueve. Sin
+    // JavaScript o con movimiento reducido el portal es corto y no se reserva.
+    if (ref.current && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      ref.current.style.minHeight = `${(SCROLL_LENGTH + 1) * 100}svh`;
+    }
     const mount = () => {
       if (window.scrollY < 4) return;
       setNear(true);
@@ -84,7 +93,7 @@ export function Portal({ children }: { children: ReactNode }) {
           key={family}
           word="FLUYEN"
           interactive={false}
-          scrollLength={2.6}
+          scrollLength={SCROLL_LENGTH}
           fontFamily={family}
           fontWeight={500}
           enterLabel="Ir directo a los trabajos"

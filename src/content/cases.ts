@@ -28,6 +28,8 @@ export type CaseStudy = {
   slug: string;
   /** Piel del sitio mientras se mira este caso. Coincide con el CSS. */
   skin: string;
+  /** Titulares en serif (la voz de FluxWeb). Por defecto van en sans, como titulan los clientes. */
+  serif?: boolean;
   wa: WaContext;
   name: string;
   /** Qué es el cliente, en una línea. */
@@ -314,6 +316,117 @@ export const cases: CaseStudy[] = [
       title: "Caso BeClean: landing de un producto técnico",
       description:
         "Cómo armamos la landing de las tabletas efervescentes de Laboratorio Pyam: la tableta en 3D, el problema en tres capítulos y el ensayo EN 13697 en pantalla.",
+    },
+  },
+  {
+    slug: "fluxweb",
+    skin: "tinta",
+    serif: true,
+    wa: "fluxweb",
+    name: "FluxWeb",
+    kind: "Estudio de diseño y desarrollo web",
+    place: "Córdoba, Argentina",
+    year: "2026",
+    live: null,
+    summary:
+      "El portfolio anterior decía que cada sitio se parece a su cliente. Este lo tenía que demostrar.",
+    highlights: [
+      "La página cambia de piel cuando entrás a cada caso.",
+      "Se entra a los trabajos por una letra del lema.",
+      "WhatsApp está siempre a mano, con el mensaje ya escrito.",
+    ],
+    cta: "¿Querés un sitio con este nivel de detalle?",
+    lead: "El portfolio del estudio, hecho como les hacemos los sitios a los clientes.",
+    problem:
+      "El portfolio anterior decía que cada sitio se parece a su cliente. Este lo tenía que demostrar. Y faltaban cosas básicas: WhatsApp a mano, casos contados en serio y una imagen al compartir el link.",
+    hero: desk(
+      "/work/fluxweb/portada.webp",
+      "Portada de este sitio: el titular Tenés la idea sobre fondo tinta y, debajo, una fila curva con pantallas de BeClean y de Mirande Aybar.",
+    ),
+    decisions: [
+      {
+        title: "Que la página cambie de piel",
+        body: "Cuando entrás a Mirande, el sitio entero pasa a pizarra y crema. En BeClean, a verde petróleo y menta. Fondo, texto, acento y navegación cambian juntos. Es el argumento del estudio, mostrado en vez de dicho.",
+      },
+      {
+        title: "Los trabajos primero",
+        body: "El hero no nos muestra a nosotros. Muestra pantallas de sitios que están en línea, corriendo por dentro de un cilindro que se puede arrastrar.",
+      },
+      {
+        title: "WhatsApp a mano, sin molestar",
+        body: "Un botón en la navegación y uno flotante en el celular. El mensaje ya viene escrito según la sección desde la que lo tocás. Sin ventanas emergentes.",
+      },
+      {
+        title: "Rápido antes que vistoso",
+        body: "Lo que no hace falta al cargar, no se carga. El portal, el formulario y las animaciones de scroll llegan cuando se necesitan.",
+      },
+    ],
+    details: [
+      {
+        title: "Se entra por una letra",
+        body: "El lema dice «Diseñamos proyectos que fluyen». Al bajar, la cámara entra por la tinta de una letra de FLUYEN, y del otro lado están los proyectos.",
+        shot: desk(
+          "/work/fluxweb/portal.webp",
+          "El portal de este sitio a mitad de camino: las letras de FLUYEN, enormes y en crema, ocupan toda la pantalla sobre fondo tinta.",
+        ),
+        layout: "ancho",
+      },
+      {
+        title: "La piel de cada cliente",
+        body: "Acá la página ya es de Mirande: pizarra, crema y titulares en sans, como en su sitio. Un poco más abajo va a ser de BeClean.",
+        shot: desk(
+          "/work/fluxweb/piel.webp",
+          "La home de este sitio con la piel de Mirande Aybar: fondo pizarra, el nombre del cliente en letras grandes y su portada dentro de un marco de navegador.",
+        ),
+        layout: "derecha",
+      },
+      {
+        title: "Las automatizaciones, en su lugar",
+        body: "En el portfolio anterior, «¿Qué te está comiendo el día?» era protagonista. Ahora vive dentro de su servicio: elegís un dolor y ves qué entra, qué sucede y qué sale.",
+        shot: desk(
+          "/work/fluxweb/servicios.webp",
+          "La lista de servicios de este sitio con Turnos, reservas y automatizaciones abierto, y adentro el selector Qué te está comiendo el día.",
+        ),
+        layout: "izquierda",
+      },
+      {
+        title: "Te contestamos lo que ya estás pensando",
+        body: "Elegís quién sos y cambian la objeción, la respuesta y hasta el mensaje de WhatsApp del botón.",
+        shot: desk(
+          "/work/fluxweb/publico.webp",
+          "La sección Para quién de este sitio con la opción una inmobiliaria elegida: la objeción Ya estoy en los portales y la respuesta en letras grandes.",
+        ),
+        layout: "derecha",
+      },
+    ],
+    mobile: {
+      title: "Pensado desde el celular",
+      body: "La mayoría llega desde Instagram, con el pulgar. El hero, el proceso y el formulario se diseñaron primero para esa pantalla.",
+      shots: [
+        phone(
+          "/work/fluxweb/m-portada.webp",
+          "Portada de este sitio en un celular: el titular, los dos botones y el cilindro de trabajos debajo.",
+        ),
+        phone(
+          "/work/fluxweb/m-proceso.webp",
+          "La sección Cómo trabajamos en un celular: las etapas a la derecha de una línea que se dibuja al bajar.",
+        ),
+        phone(
+          "/work/fluxweb/m-formulario.webp",
+          "El formulario de contacto de este sitio en un celular, en la primera de cinco preguntas.",
+        ),
+      ],
+    },
+    deliverables: [
+      "Concepto y dirección de arte",
+      "Sistema de diseño y de motion",
+      "Todo el texto del sitio",
+      "Desarrollo y performance",
+    ],
+    seo: {
+      title: "Caso FluxWeb: cómo hicimos nuestro propio sitio",
+      description:
+        "El detrás de escena del portfolio de FluxWeb: un sitio que cambia de piel según el cliente que muestra, con un portal tipográfico y un cilindro de trabajos.",
     },
   },
 ];

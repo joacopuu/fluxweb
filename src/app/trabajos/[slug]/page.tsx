@@ -55,10 +55,16 @@ function Framed({ shot, host, sizes, priority }: { shot: Shot; host: string; siz
   );
 }
 
-function Detail({ detail, host }: { detail: CaseDetail; host: string }) {
+function Detail({ detail, host, serif }: { detail: CaseDetail; host: string; serif?: boolean }) {
   const text = (
     <>
-      <h3 className="text-[clamp(1.375rem,2.2vw,2rem)] font-semibold leading-[1.1] tracking-[-0.03em]">
+      <h3
+        className={
+          serif
+            ? "t-sub"
+            : "text-[clamp(1.375rem,2.2vw,2rem)] font-semibold leading-[1.1] tracking-[-0.03em]"
+        }
+      >
         {detail.title}
       </h3>
       <p className="t-lead mt-5 max-w-[40ch] text-muted">{detail.body}</p>
@@ -101,7 +107,10 @@ export default async function CasePage({ params }: PageProps<"/trabajos/[slug]">
   const item = getCase(slug);
   if (!item) notFound();
 
-  const host = item.live?.host ?? "fluxweb";
+  const host = item.live?.host ?? "este sitio";
+  // La voz tipográfica del caso: sans para los clientes, serif para el estudio.
+  const big = item.serif ? "t-mega !text-[clamp(2.8rem,8vw,7.5rem)]" : "t-client";
+  const mid = item.serif ? "t-title" : "t-client-sub";
   const index = cases.findIndex((c) => c.slug === item.slug);
   const next = cases[(index + 1) % cases.length];
 
@@ -132,7 +141,7 @@ export default async function CasePage({ params }: PageProps<"/trabajos/[slug]">
         </Link>
         <div className="grid-12 mt-[clamp(2rem,5vw,4rem)] items-end gap-y-6">
           <div className="col-span-12 lg:col-span-8">
-            <h1 className="t-client">{item.name}</h1>
+            <h1 className={big}>{item.name}</h1>
             <p className="t-small mt-4 text-muted">
               {item.kind}. {item.place}. {item.year}.
             </p>
@@ -152,7 +161,7 @@ export default async function CasePage({ params }: PageProps<"/trabajos/[slug]">
           <h2 id="problema" className="t-small text-muted">
             El problema
           </h2>
-          <p className="t-client-sub mt-4 max-w-[26ch]">{item.problem}</p>
+          <p className={cn(mid, "mt-4 max-w-[26ch]")}>{item.problem}</p>
         </div>
         <div className="col-span-12 lg:col-span-4 lg:col-start-9">
           <h2 className="t-small text-muted">Qué hicimos</h2>
@@ -180,7 +189,7 @@ export default async function CasePage({ params }: PageProps<"/trabajos/[slug]">
       </section>
 
       <section className="wrap pb-[var(--section)]" aria-labelledby="decisiones">
-        <h2 id="decisiones" className="t-client-sub">
+        <h2 id="decisiones" className={mid}>
           Qué decidimos y por qué
         </h2>
         <ul className="mt-10 grid gap-x-[clamp(2rem,6vw,6rem)] border-t border-line md:grid-cols-2">
@@ -194,12 +203,12 @@ export default async function CasePage({ params }: PageProps<"/trabajos/[slug]">
       </section>
 
       <section className="wrap pb-[var(--section)]" aria-labelledby="detalles">
-        <h2 id="detalles" className="t-client-sub max-w-[20ch]">
+        <h2 id="detalles" className={cn(mid, "max-w-[20ch]")}>
           Los detalles de los que estamos orgullosos
         </h2>
         <ul className="mt-[clamp(3rem,7vw,6rem)] flex flex-col gap-[clamp(5rem,12vw,10rem)]">
           {item.details.map((detail) => (
-            <Detail key={detail.title} detail={detail} host={host} />
+            <Detail key={detail.title} detail={detail} host={host} serif={item.serif} />
           ))}
         </ul>
       </section>
@@ -207,7 +216,7 @@ export default async function CasePage({ params }: PageProps<"/trabajos/[slug]">
       {item.mobile ? (
         <section className="wrap grid-12 items-center gap-y-12 pb-[var(--section)]" aria-labelledby="celular">
           <div className="col-span-12 lg:col-span-4">
-            <h2 id="celular" className="t-client-sub">
+            <h2 id="celular" className={mid}>
               {item.mobile.title}
             </h2>
             <p className="t-lead mt-5 max-w-[36ch] text-muted">{item.mobile.body}</p>
@@ -232,7 +241,9 @@ export default async function CasePage({ params }: PageProps<"/trabajos/[slug]">
       ) : null}
 
       <section className="wrap border-t border-line py-[var(--section)]">
-        <p className="t-client max-w-[14ch] !text-[clamp(2.2rem,6vw,5.5rem)]">{item.cta}</p>
+        <p className={cn(item.serif ? "t-display" : "t-client !text-[clamp(2.2rem,6vw,5.5rem)]", "max-w-[14ch]")}>
+          {item.cta}
+        </p>
         <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
           <WaLink context={item.wa} className="btn btn-primary !min-h-14 !px-7 !text-base">
             <WhatsAppGlyph className="h-5 w-5" />

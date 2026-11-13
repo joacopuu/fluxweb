@@ -10,6 +10,10 @@
 | **B. Cambio de piel** (elegido) | El sitio cambia de piel según de quién habla. En tinta y oliva cuando habla FluxWeb, en pizarra y crema cuando entra Mirande, en verde petróleo y menta cuando entra BeClean. | Demuestra el diferencial n.º 1 del perfil ("cada sitio se parece a su cliente, no a nosotros") sin decirlo. Nadie más puede copiarlo porque depende de nuestros clientes reales. |
 | **C. La revista del estudio** | Un número impreso: índice, piezas numeradas, columnas. | Es el camino que hoy toma cualquier sitio "editorial" generado. Filetes finos, columnas densas y numeración por todos lados: se reconoce como plantilla. Descartado. |
 
+### Las pieles, sección por sección
+
+Hero (tinta) → portal (tinta, y crema al entrar) → Mirande (pizarra) → BeClean (verde petróleo) → cierre de trabajos (tinta) → qué hacemos (crema) → para quién (oliva noche) → proceso (tinta) → quiénes somos (crema) → preguntas (tinta) → contacto (oliva noche) → footer (oliva). El oliva pleno aparece una sola vez, en el cierre.
+
 ### El elegido, en una frase
 
 **La página es un camaleón: se parece a quien está mostrando.** Eso ordena todo lo demás:
@@ -63,7 +67,7 @@ Tokens semánticos en `src/app/globals.css`. Los valores salen de `brand.json`.
 | Etiquetas | **Geist Mono** 500 | Solo en datos reales: la hora de Córdoba, el contador del formulario, las URL de los marcos. Nunca arriba de un título. |
 | Dentro de un caso | **Geist** 600 en titulares | Parte del cambio de piel: los dos clientes titulan en sans. |
 
-Todo con `next/font` (se descarga en el build y se sirve desde nuestro dominio), subset latino y `display: swap`.
+Todo con `next/font` (se descarga en el build y se sirve desde nuestro dominio), subset latino y `display: swap`. La base tipográfica crece de 16 a 20 px entre 1280 y 2560 px de ancho, para que el texto chico no quede diminuto en monitores grandes.
 
 #### Comparativo de display (lo que pedía el brief)
 
@@ -120,7 +124,7 @@ Todo con `next/font` (se descarga en el build y se sirve desde nuestro dominio),
 
 | Sección | Cómo entra | Por qué |
 |---|---|---|
-| Hero | Palabras que suben desde una máscara, en CSS puro. El cilindro arranca rápido y frena hasta su velocidad de crucero. | Es el único momento orquestado al cargar. En CSS, para no esperar a JavaScript: el hero anterior tardaba 2 s en mostrar el titular en mobile. |
+| Hero | Palabras que suben desde una máscara, en CSS puro. El cilindro arranca rápido y frena hasta su velocidad de crucero. El párrafo que dice qué somos no se anima: está desde el primer cuadro. | Es el único momento orquestado al cargar. En CSS, para no esperar a JavaScript: el hero anterior tardaba 2 s en mostrar el titular en mobile. |
 | Portal | Lo maneja el scroll: la cámara entra por la letra. | Momento firma. |
 | Casos | La captura se destapa con `clip-path` de abajo hacia arriba. El texto no se anima. | La imagen es la prueba, así que es lo único que se mueve. |
 | Qué hacemos | Nada al entrar. Las filas se abren con un acordeón de 220 ms. | Es una lista para escanear: el movimiento responde a la acción del usuario. |
@@ -148,8 +152,8 @@ Todo con `next/font` (se descarga en el build y se sirve desde nuestro dominio),
 
 | Componente | Origen y licencia | Qué le cambiamos |
 |---|---|---|
-| **Glyph Portal** | Christian Katzmann, MIT. Bajado del registro de 21st.dev (`@Legacy/glyph-portal`). El original está en `_referencia/21st/` y el aviso de licencia se conserva en `src/components/ui/glyph-portal.tsx`. | Sin selector de letra (el original deja elegir por dónde entrar: acá la entrada es una sola). Paleta por tokens: el papel sigue a `--bg` y el campo es crema. Playfair en lugar de Arial Black. Textos en español. Al terminar, avisa al sistema de pieles para que la página quede en crema. |
-| **Tilted Grid Hero** | ruixen.ui, vía 21st.dev (`@ruixen.ui/tilted-grid-hero`). Original en `_referencia/21st/`. | Capturas reales con marco de navegador horneado en la imagen. **Arrastrable** (el original solo corre): el arrastre mueve el tiempo de las animaciones con la Web Animations API, con inercia. Arranque acelerado que frena. Más grande y más abajo en mobile. `next/image` no aplica acá (cada baldosa se corta en 16 tiras), así que las imágenes van pre-optimizadas en WebP. |
+| **Glyph Portal** | Christian Katzmann, MIT. Bajado del registro de 21st.dev (`@Legacy/glyph-portal`). El original está en `_referencia/21st/` y el aviso de licencia se conserva en `src/components/ui/glyph-portal.tsx`. | El selector de letra queda apagado (`interactive={false}`): acá la entrada es una sola. Paleta por tokens: el papel sigue a `--bg`, el campo es crema y, una vez adentro, sigue a la piel. Playfair en lugar de Arial Black, cargada antes de montar (el portal mide la tinta con la tipografía real). Prop `hint` y rótulos en español. Se monta con el primer scroll y reserva su alto desde el arranque. Mientras se atraviesa, decide la piel del sitio: tinta afuera de la letra, crema adentro. |
+| **Tilted Grid Hero** | ruixen.ui, vía 21st.dev (`@ruixen.ui/tilted-grid-hero`). Original en `_referencia/21st/`. | Capturas reales con marco de navegador horneado en la imagen. **Arrastrable** (el original solo corre): el arrastre mueve el tiempo de las animaciones con la Web Animations API, con inercia. Arranque acelerado que frena. Se pausa fuera de pantalla. Ancho de baldosa por tamaño de pantalla (84 % en teléfono, 34 % en escritorio) y 10 tiras en lugar de 16 en teléfono. `srcset` con una versión de 640 px. **Dos correcciones al original:** animaba `visibility` junto con `transform`, lo que sacaba la animación del compositor y hacía trabajar al hilo principal en cada cuadro (ahora las baldosas fuera de cuadro se ocultan revisando el reloj de la animación cinco veces por segundo); y su pausa para movimiento reducido no funcionaba, porque el `animation` en línea pisaba la regla. `next/image` no aplica acá (cada baldosa se pinta en tiras desplazadas), así que las imágenes van pre-optimizadas en WebP. |
 | Spline Scene, Scroll Morph Hero, Arc Carousel, Background Paths | Venían pegados en el encargo. | **No se usaron.** Spline suma un runtime 3D pesado para un robot de stock. Scroll Morph secuestra la rueda del mouse. Background Paths es el fondo animado que tiene medio internet. Arc Carousel compite con el cilindro. |
 
 ## 6. Referencias: qué tomamos de cada una
@@ -169,4 +173,19 @@ Todo con `next/font` (se descarga en el build y se sirve desde nuestro dominio),
 
 - **Transiciones de página** con `<ViewTransition>` de React (Next 16): el marco de la captura de cada caso se transforma en el hero de su página.
 - **Sin Three.js.** El cilindro es CSS 3D y el portal es un `clipPath` SVG. Ningún momento firma justificaba cargar WebGL.
-- **`og:image`** generadas con `next/og`, una por página, con la piel de cada caso.
+- **`og:image`** generadas con `next/og`, una por página, con la piel de cada caso. Las fuentes van embebidas en base64 para no depender del sistema de archivos en Workers.
+- **El tercer caso es este sitio** (`/trabajos/fluxweb`). Es el único que titula en serif: los clientes hablan en sans, el estudio en Playfair.
+
+### Performance: qué se carga y cuándo
+
+La primera medición de Lighthouse en mobile dio 52. Una traza del hilo principal mostró tres causas, y ninguna era "demasiadas animaciones":
+
+| Causa | Qué hacía | Qué cambiamos |
+|---|---|---|
+| ScrollTrigger mantiene un bucle permanente de `requestAnimationFrame` | Con el hero en pantalla, cada cuadro obligaba a recalcular en el hilo principal las animaciones del cilindro (145 recálculos de estilo por segundo). | ScrollTrigger y SplitText se cargan con el primer scroll (`src/lib/scroll-kit.ts`). Al cargar la página no hay nada que dependa del scroll. |
+| El cilindro original animaba `visibility` | Esa propiedad no corre en el compositor: arrastraba a toda la animación al hilo principal. | Keyframes solo con `transform`. El ocultado se hace aparte, sin animación. |
+| Toda la página se calculaba y se hidrataba de una vez | Una tarea de layout de 300 ms y varias de hidratación de 100 a 200 ms (con el procesador frenado 4 veces). | `content-visibility: auto` en las secciones debajo del pliegue, las secciones interactivas en trozos separados (`next/dynamic`), y el portal y el formulario montados cuando hacen falta. |
+
+Un efecto secundario bueno: con `content-visibility`, el cambio de piel (que recalcula el estilo de todo lo renderizado) solo trabaja sobre lo que está cerca de la pantalla.
+
+Además: Lenis duerme su bucle cuando no hay scroll, GSAP se descarga solo si hay puntero fino o después del primer scroll, y Motion solo se usa en el formulario (viaja en su trozo).

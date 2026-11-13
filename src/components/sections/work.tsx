@@ -74,7 +74,7 @@ function Chapter({ item, flip }: { item: CaseStudy; flip: boolean }) {
             <Link href={href} data-cursor="Ver caso" className="block">
               <span className="sr-only">Ver el caso de {item.name}: </span>
               <ViewTransition name={`caso-${item.slug}`} share="morph" default="none">
-                <BrowserFrame host={item.live?.host ?? "fluxweb"}>
+                <BrowserFrame host={item.live?.host ?? "este sitio"}>
                   {item.clip ? (
                     <LazyClip {...item.clip} className="block h-auto w-full bg-raise" />
                   ) : (
