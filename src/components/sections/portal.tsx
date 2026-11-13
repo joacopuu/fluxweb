@@ -17,9 +17,26 @@ export function Portal({ children }: { children: ReactNode }) {
   // El portal mide la tinta con la tipografía ya cargada: hasta entonces usa
   // una serif del sistema, y se vuelve a montar cuando Playfair está lista.
   const [family, setFamily] = useState(FALLBACK);
+  // El portal mide tipografía y arma un clip SVG: no hace falta pagar eso al
+  // cargar la página. Se monta con el primer scroll (está justo debajo del
+  // hero, así que el cambio pasa fuera de pantalla).
+  const [near, setNear] = useState(false);
 
   useEffect(() => {
-    const declared = getComputedStyle(document.documentElement).getPropertyValue("--font-playfair");
+    const mount = () => {
+      if (window.scrollY < 4) return;
+      setNear(true);
+      window.removeEventListener("scroll", mount);
+    };
+    window.addEventListener("scroll", mount, { passive: true });
+    mount();
+    return () => window.removeEventListener("scroll", mount);
+  }, []);
+
+  useEffect(() => {
+    const declared = getComputedStyle(
+      document.documentElement,
+    ).getPropertyValue("--font-playfair");
     const first = declared.split(",")[0]?.trim();
     if (!first) return;
     let cancelled = false;
@@ -48,36 +65,56 @@ export function Portal({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div ref={ref} id="trabajos" tabIndex={-1} data-zone-wa="trabajos" className="group/portal outline-none">
-      <GlyphPortal
-        key={family}
-        word="FLUYEN"
-        interactive={false}
-        scrollLength={2.6}
-        fontFamily={family}
-        fontWeight={500}
-        enterLabel="Ir directo a los trabajos"
-        hint="Seguí bajando. Se entra por la letra."
-        onProgress={onProgress}
-        className="!font-sans"
-        style={{
-          "--gp-paper": "var(--bg)",
-          "--gp-ink": "var(--ink)",
-          "--gp-field": "#f0e9d6",
-          "--gp-foreground": "var(--ink)",
-        }}
-        background={<div className="absolute inset-0 bg-[#f0e9d6] group-data-[inside=true]/portal:bg-bg" />}
-        front={
-          <p
-            className="t-sub absolute left-[8%] right-[8%]"
-            style={{ bottom: "calc(100% - var(--gp-word-top, 30%) + clamp(0.75rem, 2vw, 1.75rem))" }}
-          >
-            Diseñamos proyectos que
-          </p>
-        }
-      >
-        {children}
-      </GlyphPortal>
+    <div
+      ref={ref}
+      id="trabajos"
+      tabIndex={-1}
+      data-zone-wa="trabajos"
+      className="group/portal outline-none"
+    >
+      {!near ? (
+        // Versión quieta: lo que se ve sin JavaScript y antes de montar el portal.
+        <section className="wrap py-[var(--section)]">
+          <p className="t-sub">Diseñamos proyectos que</p>
+          <p className="t-mega">FLUYEN</p>
+          <div className="mt-[var(--section)]">{children}</div>
+        </section>
+      ) : (
+        <GlyphPortal
+          key={family}
+          word="FLUYEN"
+          interactive={false}
+          scrollLength={2.6}
+          fontFamily={family}
+          fontWeight={500}
+          enterLabel="Ir directo a los trabajos"
+          hint="Seguí bajando. Se entra por la letra."
+          onProgress={onProgress}
+          className="!font-sans"
+          style={{
+            "--gp-paper": "var(--bg)",
+            "--gp-ink": "var(--ink)",
+            "--gp-field": "#f0e9d6",
+            "--gp-foreground": "var(--ink)",
+          }}
+          background={
+            <div className="absolute inset-0 bg-[#f0e9d6] group-data-[inside=true]/portal:bg-bg" />
+          }
+          front={
+            <p
+              className="t-sub absolute left-[8%] right-[8%]"
+              style={{
+                bottom:
+                  "calc(100% - var(--gp-word-top, 30%) + clamp(0.75rem, 2vw, 1.75rem))",
+              }}
+            >
+              Diseñamos proyectos que
+            </p>
+          }
+        >
+          {children}
+        </GlyphPortal>
+      )}
     </div>
   );
 }

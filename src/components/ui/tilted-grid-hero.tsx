@@ -28,8 +28,11 @@ import { cn } from "@/lib/utils";
  * Todo corre en el compositor: solo transform.
  * ─────────────────────────────────────────────────────────────── */
 
-// Tiras por baldosa. Menos, y se ven las esquinas arriba y abajo.
-const SLICES = 16;
+// Tiras por baldosa. Menos, y se ven las esquinas arriba y abajo. En pantallas
+// chicas alcanza con menos: cada tira es una capa del compositor.
+function slicesFor(width: number) {
+  return width < 640 ? 10 : 16;
+}
 
 // Distancia de la cámara, en radios del cilindro. Apenas pasando el eje, para
 // que los extremos se vengan encima.
@@ -67,7 +70,7 @@ function measure(
   const maxW = maxTileWidth(width);
   const h = Math.min((tile / 100) * height, ((maxW / 100) * width) / aspect);
   const radius = width * arc(bend);
-  if (!(h > 0) || !(radius > 0)) return { columns: 2, sweep: 0, unit: 0, limit: 0, pitchPx: 1, maxW };
+  if (!(h > 0) || !(radius > 0)) return { columns: 2, sweep: 0, unit: 0, limit: 0, pitchPx: 1, maxW, slices: slicesFor(width) };
   const deg = (rad: number) => (rad * 180) / Math.PI;
   const unit = deg(h / radius);
   const pitch = (aspect + gap / 100) * unit;
@@ -83,11 +86,14 @@ function measure(
     // Lo que avanza una baldosa en pantalla, en el centro, por cada paso.
     pitchPx: h * (aspect + gap / 100),
     maxW,
+    slices: slicesFor(width),
   };
 }
 
 export type TiltedGridImage = {
   src: string;
+  /** Variantes por ancho, como en un `<img srcset>`. */
+  srcSet?: string;
   alt?: string;
 };
 
@@ -164,11 +170,20 @@ export function TiltedGridHero({
 
   // Se piden todas de entrada: una baldosa toma la suya justo antes de volver
   // a verse, tarde para empezar a cargarla ahí.
+  const sizes = layout ? `${layout.maxW}vw` : "84vw";
   React.useEffect(() => {
-    for (const { src } of images) new Image().src = src;
-  }, [images]);
+    if (!layout) return;
+    for (const { src, srcSet } of images) {
+      const img = new Image();
+      if (srcSet) {
+        img.sizes = sizes;
+        img.srcset = srcSet;
+      }
+      img.src = src;
+    }
+  }, [images, layout, sizes]);
 
-  const { columns, sweep, unit, limit, pitchPx, maxW } =
+  const { columns, sweep, unit, pitchPx, maxW, slices: SLICES } =
     layout ?? measure(1200, 560, tileHeight, aspectRatio, gap, bend);
   const duration = columns * speed;
 
@@ -177,14 +192,16 @@ export function TiltedGridHero({
     const band = bandRef.current;
     if (!band || !layout) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const tiles = () =>
-      band
-        .getAnimations({ subtree: true })
-        .filter((a) => (a as CSSAnimation).animationName === orbit);
+    // Se buscan una sola vez por armado: pedirlas en cada cuadro obliga al
+    // navegador a recalcular estilos.
+    const list = band
+      .getAnimations({ subtree: true })
+      .filter((a) => (a as CSSAnimation).animationName?.startsWith(orbit));
+    const tiles = () => list;
 
     // Ventaja en el reloj, para poder arrastrar hacia atrás.
     const lapMs = duration * 1000;
-    for (const a of tiles()) a.currentTime = Number(a.currentTime ?? 0) + HEADROOM_LAPS * lapMs;
+    for (const a of list) a.currentTime = Number(a.currentTime ?? 0) + HEADROOM_LAPS * lapMs;
     if (reduce) return;
 
     const msPerPx = (speed * 1000) / Math.max(1, pitchPx);
@@ -202,15 +219,17 @@ export function TiltedGridHero({
       for (const a of tiles()) a.currentTime = Math.max(lapMs, Number(a.currentTime ?? 0) + ms);
     };
 
-    // Arranque: llega rápido y frena hasta la velocidad de crucero.
+    // Arranque: llega rápido y frena hasta la velocidad de crucero. En pasos
+    // de 110 ms y no por cuadro: cada cambio de velocidad reinicia las
+    // animaciones en el compositor.
     const started = performance.now();
-    const intro = (now: number) => {
-      const t = Math.min(1, (now - started) / 1900);
+    let introTimer = window.setInterval(() => {
+      const t = Math.min(1, (performance.now() - started) / 1800);
       const eased = 1 - Math.pow(1 - t, 3);
-      setRate(7 - 6 * eased);
-      if (t < 1 && !dragging) raf = requestAnimationFrame(intro);
-    };
-    raf = requestAnimationFrame(intro);
+      if (!dragging) setRate(6 - 5 * eased);
+      if (t >= 1 || dragging) window.clearInterval(introTimer);
+    }, 110);
+    setRate(6);
 
     const coast = () => {
       velocity *= 0.94;
@@ -235,6 +254,8 @@ export function TiltedGridHero({
       lastX = e.clientX;
       velocity = 0;
       cancelAnimationFrame(raf);
+      window.clearInterval(introTimer);
+      introTimer = 0;
       setRate(0);
       band.setPointerCapture(e.pointerId);
       band.dataset.dragging = "true";
@@ -271,6 +292,7 @@ export function TiltedGridHero({
 
     return () => {
       cancelAnimationFrame(raf);
+      window.clearInterval(introTimer);
       visibility.disconnect();
       band.removeEventListener("pointerdown", down);
       band.removeEventListener("pointermove", move);
@@ -290,13 +312,13 @@ export function TiltedGridHero({
   const turn = (deg: number) =>
     `translateZ(${radius}) rotateY(${+deg.toFixed(4)}deg) translateZ(-${radius})`;
 
-  // Más allá de `limit` la baldosa está entera fuera de cuadro: ahí se oculta.
-  const hide = +(((sweep - limit) / (2 * sweep || 1)) * 100).toFixed(4);
+  // Cambio nuestro: el original además animaba `visibility` para ocultar las
+  // baldosas fuera de cuadro. Esa propiedad no corre en el compositor y
+  // obligaba al hilo principal a producir un cuadro por vsync. Más allá de
+  // `limit` la baldosa ya se proyecta fuera del cuadro, así que alcanza con
+  // transform: la animación queda entera en el compositor.
   const css =
-    `@keyframes ${orbit}{` +
-    `from{transform:${turn(-sweep)}}to{transform:${turn(sweep)}}` +
-    `0%,${hide}%,${100 - hide}%,100%{visibility:hidden}` +
-    `${hide + 0.001}%,${100 - hide - 0.001}%{visibility:visible}}` +
+    `@keyframes ${orbit}{from{transform:${turn(-sweep)}}to{transform:${turn(sweep)}}}` +
     // Con movimiento reducido se pausa en vez de quitarse: cada baldosa ya
     // está ubicada por su retraso negativo, así que queda una imagen fija.
     `@media(prefers-reduced-motion:reduce){.${tile}{animation-play-state:paused}}`;
@@ -344,6 +366,7 @@ export function TiltedGridHero({
                 animation: `${orbit} ${duration}s linear ${-t * speed}s infinite`,
               }}
               onAnimationIteration={(e) => {
+                if (e.animationName !== orbit) return;
                 // elapsedTime cuenta vueltas enteras, incluso las salteadas.
                 const lap = Math.round(e.elapsedTime / duration);
                 setShown((prev) => {
@@ -375,6 +398,8 @@ export function TiltedGridHero({
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={img.src}
+                      srcSet={img.srcSet}
+                      sizes={img.srcSet ? sizes : undefined}
                       alt=""
                       draggable={false}
                       decoding="async"

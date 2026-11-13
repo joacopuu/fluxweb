@@ -1,11 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { SplitText } from "gsap/SplitText";
-
-gsap.registerPlugin(ScrollTrigger, SplitText);
+import { scrollKit } from "@/lib/scroll-kit";
 
 /**
  * Titular que sube línea por línea desde una máscara cuando entra en pantalla.
@@ -26,14 +22,17 @@ export function MaskReveal({
   useEffect(() => {
     const el = ref.current;
     if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    let split: SplitText | undefined;
+    let split: { revert: () => void } | undefined;
     let cancelled = false;
-    document.fonts.ready.then(() => {
+    Promise.all([scrollKit(), document.fonts.ready]).then(([{ gsap, SplitText }]) => {
       if (cancelled) return;
       split = SplitText.create(el, {
         type: "lines",
         mask: "lines",
         linesClass: "sl",
+        // Sin aria-label automático: en un <p> no está permitido, y el texto
+        // partido en líneas se lee igual.
+        aria: "none",
         autoSplit: true,
         onSplit(self) {
           return gsap.from(self.lines, {

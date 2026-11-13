@@ -399,7 +399,7 @@ html.lenis body {
 }
 .rise > span {
   display: inline-block;
-  transform: translateY(112%);
+  transform: translateY(var(--from, 112%));
   animation: rise var(--dur-reveal) var(--ease-out-expo) forwards;
   animation-delay: calc(var(--i, 0) * 55ms + var(--d, 0ms));
 }

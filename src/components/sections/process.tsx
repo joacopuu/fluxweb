@@ -1,14 +1,11 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowUpRight } from "lucide-react";
+import { scrollKit } from "@/lib/scroll-kit";
 import { facts, stages } from "@/content/home";
 import { WaLink } from "@/components/ui/wa-link";
 import { cn } from "@/lib/utils";
-
-gsap.registerPlugin(ScrollTrigger);
 
 /**
  * Cómo trabajamos. Una línea (el cauce) se dibuja con el scroll y enciende
@@ -29,7 +26,9 @@ export function Process() {
     if (!list || !svg || !base || !draw) return;
     const items = Array.from(list.querySelectorAll<HTMLElement>("[data-stage]"));
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let triggers: ScrollTrigger[] = [];
+    type Kit = Awaited<ReturnType<typeof scrollKit>>;
+    let kit: Kit | null = null;
+    let triggers: { kill: () => void }[] = [];
 
     const build = () => {
       triggers.forEach((t) => t.kill());
@@ -71,6 +70,10 @@ export function Process() {
         return;
       }
       draw.style.strokeDashoffset = String(length);
+      // La geometría se arma siempre; el dibujo con el scroll, cuando
+      // ScrollTrigger ya cargó (después del primer scroll).
+      if (!kit) return;
+      const { gsap, ScrollTrigger } = kit;
       const tween = gsap.to(draw, {
         strokeDashoffset: 0,
         ease: "none",
@@ -90,12 +93,19 @@ export function Process() {
     };
 
     build();
+    let cancelled = false;
+    scrollKit().then((loaded) => {
+      if (cancelled) return;
+      kit = loaded;
+      build();
+    });
     const observer = new ResizeObserver(() => {
       build();
-      ScrollTrigger.refresh();
+      kit?.ScrollTrigger.refresh();
     });
     observer.observe(list);
     return () => {
+      cancelled = true;
       observer.disconnect();
       triggers.forEach((t) => t.kill());
     };

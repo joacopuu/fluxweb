@@ -1,11 +1,8 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { scrollKit } from "@/lib/scroll-kit";
 import { cn } from "@/lib/utils";
-
-gsap.registerPlugin(ScrollTrigger);
 
 /** Destapa a su hijo con clip-path la primera vez que entra en pantalla. */
 export function Unveil({ children, className }: { children: ReactNode; className?: string }) {
@@ -51,18 +48,27 @@ export function Drift({
   useEffect(() => {
     const el = ref.current;
     if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const tween = gsap.fromTo(
-      el,
-      { yPercent: from },
-      {
-        yPercent: to,
-        ease: "none",
-        scrollTrigger: { trigger: el.parentElement ?? el, start: "top bottom", end: "bottom top", scrub: 0.6 },
-      },
-    );
+    let cleanup = () => {};
+    let cancelled = false;
+    scrollKit().then(({ gsap }) => {
+      if (cancelled) return;
+      const tween = gsap.fromTo(
+        el,
+        { yPercent: from },
+        {
+          yPercent: to,
+          ease: "none",
+          scrollTrigger: { trigger: el.parentElement ?? el, start: "top bottom", end: "bottom top", scrub: 0.6 },
+        },
+      );
+      cleanup = () => {
+        tween.scrollTrigger?.kill();
+        tween.kill();
+      };
+    });
     return () => {
-      tween.scrollTrigger?.kill();
-      tween.kill();
+      cancelled = true;
+      cleanup();
     };
   }, [from, to]);
   return (

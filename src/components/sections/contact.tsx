@@ -6,7 +6,7 @@ import { WhatsAppGlyph } from "@/components/brand/mark";
 import { CopyEmail } from "@/components/ui/copy-email";
 import { Magnetic } from "@/components/ui/magnetic";
 import { WaLink } from "@/components/ui/wa-link";
-import { ContactForm } from "./contact-form";
+import { LazyForm } from "./lazy-form";
 
 /** Contacto: tres niveles de compromiso, del más rápido al más completo. */
 export function Contact() {
@@ -75,7 +75,12 @@ export function Contact() {
           <div className="col-span-12 lg:col-span-8">
             <h3 className="t-sub mb-6">O el proyecto entero, en cinco preguntas.</h3>
             <div className="rounded-[var(--radius-m)] bg-raise p-[clamp(1.25rem,3.5vw,3rem)]">
-              <ContactForm />
+              <LazyForm />
+              <noscript>
+                <p className="t-body text-muted">
+                  El formulario necesita JavaScript. Escribinos por WhatsApp o por email, que llega igual.
+                </p>
+              </noscript>
             </div>
           </div>
           <aside className="col-span-12 lg:col-span-3 lg:col-start-10 lg:pt-[4.5rem]">

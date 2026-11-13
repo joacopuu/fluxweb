@@ -73,8 +73,12 @@ export function ContactForm() {
   const [emailReady, setEmailReady] = useState<boolean | null>(null);
   const [website, setWebsite] = useState("");
   const openedAt = useRef(0);
-  const legendRef = useRef<HTMLLegendElement>(null);
   const moved = useRef(false);
+  // Al cambiar de paso, el foco va a la pregunta nueva en cuanto se monta
+  // (no al cargar la página, para no robar el foco ni mover el scroll).
+  const focusQuestion = (el: HTMLLegendElement | null) => {
+    if (el && moved.current) el.focus({ preventScroll: true });
+  };
 
   useEffect(() => {
     openedAt.current = Date.now();
@@ -84,11 +88,6 @@ export function ContactForm() {
       .then((data: { email?: boolean }) => setEmailReady(Boolean(data.email)))
       .catch(() => setEmailReady(false));
   }, []);
-
-  // Al cambiar de paso, el foco va a la pregunta nueva (no al cargar la página).
-  useEffect(() => {
-    if (moved.current) legendRef.current?.focus({ preventScroll: true });
-  }, [step]);
 
   const set = <K extends keyof Answers>(key: K, value: Answers[K]) => {
     setAnswers((prev) => ({ ...prev, [key]: value }));
@@ -217,7 +216,7 @@ export function ContactForm() {
             aria-describedby={error ? errorId : undefined}
             className="min-w-0"
           >
-            <legend ref={legendRef} tabIndex={-1} className="t-sub mb-6 outline-none">
+            <legend ref={focusQuestion} tabIndex={-1} className="t-sub mb-6 outline-none">
               {questions[step]}
             </legend>
 

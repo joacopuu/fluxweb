@@ -4,16 +4,37 @@ import { WaLink } from "@/components/ui/wa-link";
 import { WhatsAppGlyph } from "@/components/brand/mark";
 
 /** Las diez baldosas del cilindro: capturas reales, con el marco horneado. */
-const tiles = Array.from({ length: 10 }, (_, i) => ({
-  src: `/work/cilindro/${String(i + 1).padStart(2, "0")}.webp`,
-}));
+const tiles = Array.from({ length: 10 }, (_, i) => {
+  const n = String(i + 1).padStart(2, "0");
+  return {
+    src: `/work/cilindro/${n}.webp`,
+    srcSet: `/work/cilindro/${n}-s.webp 640w, /work/cilindro/${n}.webp 1120w`,
+  };
+});
 
 /** Palabras que suben desde una máscara, en CSS puro (no espera a JavaScript). */
-function Rise({ text, from = 0, delay = 0 }: { text: string; from?: number; delay?: number }) {
+function Rise({
+  text,
+  from = 0,
+  delay = 0,
+  peek,
+}: {
+  text: string;
+  from?: number;
+  delay?: number;
+  /** Arranca ya asomando, para que el titular exista desde el primer cuadro. */
+  peek?: boolean;
+}) {
   return text.split(" ").map((word, i) => (
     <span key={i}>
       <span className="rise">
-        <span style={{ "--i": from + i, "--d": `${delay}ms` } as React.CSSProperties}>{word}</span>
+        <span
+          style={
+            { "--i": from + i, "--d": `${delay}ms`, ...(peek ? { "--from": "58%" } : {}) } as React.CSSProperties
+          }
+        >
+          {word}
+        </span>
       </span>{" "}
     </span>
   ));
@@ -29,7 +50,7 @@ export function Hero() {
       <div className="wrap pt-[clamp(1.25rem,4.5svh,3.5rem)]">
         <h1 className="grid-12 gap-y-[clamp(0.75rem,2svh,1.5rem)]">
           <span className="t-mega col-span-12 block">
-            <Rise text="Tenés la idea." />
+            <Rise text="Tenés la idea." peek />
           </span>
           <span className="t-sub col-span-12 block lg:col-span-7 lg:col-start-6">
             <Rise text="Nosotros la convertimos en una web que se siente" from={3} delay={120} />

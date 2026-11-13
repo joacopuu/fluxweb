@@ -66,7 +66,8 @@ function Chapter({ item, flip }: { item: CaseStudy; flip: boolean }) {
 
         <div className={cn("relative col-span-12 lg:col-span-7", flip ? "lg:order-1" : "lg:col-start-6")}>
           <Unveil>
-            <Link href={href} data-cursor="Ver caso" aria-label={`Ver el caso de ${item.name}`} className="block">
+            <Link href={href} data-cursor="Ver caso" className="block">
+              <span className="sr-only">Ver el caso de {item.name}: </span>
               <ViewTransition name={`caso-${item.slug}`} share="morph" default="none">
                 <BrowserFrame host={item.live?.host ?? "fluxweb"}>
                   {item.clip ? (
