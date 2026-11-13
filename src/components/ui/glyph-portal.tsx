@@ -4,6 +4,12 @@
  * Glyph Portal © 2026 Christian Katzmann. MIT.
  * Origin: UsefulPortal.astro on https://ktzm.dk → UsefulPortal.tsx → ClarityPortal.tsx.
  * A scroll-driven camera through live type. Keep this notice with copies.
+ *
+ * Copia del registro de 21st.dev (@Legacy/glyph-portal). El original sin tocar
+ * está en `_referencia/21st/glyph-portal.original.tsx`. Cambios de FluxWeb
+ * (ver DESIGN.md §5): prop `hint` para el texto de la pista, rótulos en
+ * español y sin fondo por defecto (lo define quien lo usa). El selector de
+ * letra queda apagado desde afuera con `interactive={false}`.
  */
 import { useId, useLayoutEffect, useRef, type CSSProperties, type ReactNode } from "react";
 
@@ -31,6 +37,8 @@ export type GlyphPortalProps = {
   fontWeight?: number;
   annotations?: boolean;
   enterLabel?: string;
+  /** Texto de la pista bajo la palabra. */
+  hint?: string;
   className?: string;
   style?: GlyphPortalStyle;
   /** Called once per rendered scroll frame, never through React state. */
@@ -89,7 +97,7 @@ function scrollParent(element: HTMLElement): HTMLElement | null {
 export default function GlyphPortal({
   word = "SUBLIME", focusChar, interactive = true, background, front, children, scrollLength = 2.4,
   fontFamily = DEFAULT_FONT, fontWeight = 900, annotations = false,
-  enterLabel = "Enter section", className, style, onProgress,
+  enterLabel = "Entrar a la sección", hint, className, style, onProgress,
 }: GlyphPortalProps) {
   const uid = `gp-${useId().replace(/[^a-zA-Z0-9]/g, "")}`;
   const clipId = `${uid}-clip`;
@@ -97,11 +105,11 @@ export default function GlyphPortal({
   const progressRef = useRef(onProgress);
   useLayoutEffect(() => { progressRef.current = onProgress; }, [onProgress]);
   const text = word.trim().normalize("NFC") || "SUBLIME";
-  let characterOffset = 0;
-  const characters = Array.from(text, (char) => {
-    const index = characterOffset; characterOffset += char.length;
-    return { char, index };
-  });
+  const characters = Array.from(text).reduce<{ char: string; index: number }[]>((list, char) => {
+    const prev = list[list.length - 1];
+    list.push({ char, index: prev ? prev.index + prev.char.length : 0 });
+    return list;
+  }, []);
   const length = Number.isFinite(scrollLength) ? clamp(scrollLength, 1, 8) : 2.4;
   const weight = Number.isFinite(fontWeight) ? clamp(fontWeight, 1, 1000) : 900;
   const hasFront = front != null;
@@ -123,6 +131,7 @@ export default function GlyphPortal({
     const canvas = document.createElement("canvas");
     const context = canvas.getContext("2d", { willReadFrequently: true });
     let disposed = false, raf = 0, dirty = true, active = true, ready = false;
+    // eslint-disable-next-line react-hooks/purity -- dentro del efecto, no del render (código original)
     const mountedAt = performance.now();
     let browserFrameSeen = false, stalled = false;
     let W = 1, H = 1, travel = 1, startScale = 1, endScale = 1;
@@ -391,7 +400,7 @@ export default function GlyphPortal({
       <div data-gp-viewport aria-hidden="true" />
       <div data-gp-pin>
         <div data-gp-field aria-hidden="true" inert>
-          {background ?? <div data-gp-default-field style={{ position: "absolute", inset: 0, transform: "scale(var(--gp-field-scale,1))", background: "radial-gradient(circle at 18% 8%, rgba(68,125,98,.72), transparent 34%), radial-gradient(circle at 82% 20%, rgba(251,251,250,.12), transparent 28%), radial-gradient(circle at 48% 78%, rgba(9,48,35,.5), transparent 44%), linear-gradient(135deg,#0b3b2a 0%,#14573f 48%,#082d22 100%)" }} />}
+          {background}
         </div>
         <svg data-gp-art aria-hidden="true" focusable="false">
           <defs>
@@ -401,22 +410,22 @@ export default function GlyphPortal({
           </defs>
           <g data-gp-marks style={{ visibility: annotations ? "visible" : "hidden" }}><path /></g>
         </svg>
-        <div data-gp-choices role="radiogroup" aria-label="Choose the letter to enter through" inert>
-          {characters.map(({ char, index }, i) => <button type="button" role="radio" aria-checked="false" tabIndex={-1} data-gp-letter={index} key={index} aria-label={`${char}, letter ${i + 1} of ${characters.length}`} />)}
+        <div data-gp-choices role="radiogroup" aria-label="Elegí la letra por la que entrar" inert>
+          {characters.map(({ char, index }, i) => <button type="button" role="radio" aria-checked="false" tabIndex={-1} data-gp-letter={index} key={index} aria-label={`${char}, letra ${i + 1} de ${characters.length}`} />)}
         </div>
-        <label data-gp-touch-picker><span style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clipPath: "inset(50%)" }}>Entry letter</span><select data-gp-select defaultValue="">
-          <option value="" disabled>Choose a letter</option>
+        <label data-gp-touch-picker><span style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clipPath: "inset(50%)" }}>Letra de entrada</span><select data-gp-select defaultValue="">
+          <option value="" disabled>Elegí una letra</option>
           {characters.map(({ char, index }, i) => <option key={index} value={index}>{i + 1} · {char}</option>)}
         </select></label>
         {front && <div data-gp-front>{front}</div>}
         <span data-gp-fallback aria-hidden="true" style={{ fontFamily, fontWeight: weight }}>{text}</span>
         <div data-gp-caption>
-          <span data-gp-hint aria-hidden="true">{interactive ? "Scroll to enter." : annotations ? "A passage through type" : ""}</span>
+          <span data-gp-hint aria-hidden="true">{hint ?? (interactive ? "Seguí bajando para entrar." : "")}</span>
           <a data-gp-enter href={`#${uid}-content`}>{enterLabel}<span aria-hidden="true">↘</span></a>
         </div>
       </div>
       <div data-gp-content id={`${uid}-content`} tabIndex={-1}>
-        {children ?? <div><h2 data-gp-default-title>A letter becomes a place.</h2><p data-gp-default-copy>The shape opens onto whatever comes next.</p></div>}
+        {children}
       </div>
     </section>
   );

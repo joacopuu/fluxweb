@@ -534,3 +534,21 @@ html.lenis body {
 .skip:focus-visible {
   transform: translateY(0);
 }
+
+/* Cambio de estado (selector de público, automatizaciones): fundido corto con
+   un pelo de desenfoque, para que no se vean dos textos superpuestos. */
+.swap-in {
+  animation: swap-in 320ms var(--ease-out) both;
+}
+@keyframes swap-in {
+  from {
+    opacity: 0;
+    filter: blur(3px);
+    transform: translateY(6px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .swap-in {
+    animation: fade-in 160ms ease both;
+  }
+}
