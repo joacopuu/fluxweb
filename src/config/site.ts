@@ -13,7 +13,7 @@ export const site = {
    * y el sitemap). Con dominio propio: definir NEXT_PUBLIC_SITE_URL y volver a
    * publicar.
    */
-  url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://fluxweb-v2.franciscoaybar2110.workers.dev").replace(/\/$/, ""),
+  url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://fluxweb-v2.joaquinpugatrossero.workers.dev").replace(/\/$/, ""),
   locale: "es-AR",
   city: "Córdoba",
   country: "Argentina",

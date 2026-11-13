@@ -27,16 +27,34 @@ La sesión se cortó dos veces por el límite de uso de la cuenta. No son tiempo
 | Motion, pulido y performance | 11:30 | De 52 a 100 en performance de Lighthouse en la home. Prueba en WebKit. Revisión de marca, de página y de robustez. |
 | QA y entrega | 11:55 | Tercer caso (`/trabajos/fluxweb`), Lighthouse final, documentación. |
 
+## Publicación (13/11/2026, 13:05)
+
+Joaquín pidió publicarlo y autorizó a Wrangler desde su navegador. Publicado como Worker **`fluxweb-v2`** en https://fluxweb-v2.joaquinpugatrossero.workers.dev. En esa cuenta no había ningún Worker `fluxweb` ni `fluxweb-v2`, así que no se pisó nada. Dos deploys: el primero para conocer la URL, el segundo con la URL real en la canónica, el sitemap y las `og:image`.
+
+Verificado en vivo: las 5 páginas, el 404, sitemap, robots, las dos `og:image`, el ícono, el video y la ruta del formulario responden; las imágenes salen en AVIF por el binding IMAGES; todo va con Brotli. Recorrido en mobile y escritorio: sin scroll horizontal y sin errores ni avisos en la consola.
+
+### Lighthouse, mobile, sobre la URL publicada
+
+| Página | Performance | Accesibilidad | Buenas prácticas | SEO | LCP simulado | LCP observado | CLS | TBT |
+|---|---|---|---|---|---|---|---|---|
+| `/` | **100** | 100 | 100 | 100 | 1,3 s | 0,7 s | 0 | 50 ms |
+| `/trabajos/mirande-aybar` | **96** | 100 | 100 | 100 | 2,7 s | 1,4 s | 0 | 40 ms |
+| `/trabajos/beclean` | **96** | 100 | 100 | 100 | 2,7 s | 1,2 s | 0 | 70 ms |
+| `/trabajos/fluxweb` | **96** | 100 | 100 | 100 | 2,7 s | 1,2 s | 0 | 100 ms |
+| `/privacidad` | **100** | 100 | 100 | 100 | 1,0 s | 0,6 s | 0 | 50 ms |
+
+Lo único que sigue sin cumplir: el LCP simulado de las páginas de caso, 2,7 s contra 2,5 s.
+
 ## Hallazgos de la inmersión
 
 - **Mirande tiene hoy 33 propiedades publicadas, no 31.** Es una base viva. El copy dice "más de 30".
 - **Instagram:** el conector no conectó.
-- **Wrangler no tiene sesión iniciada.** No hice login ni usé `--temporary`.
+- **Wrangler no tenía sesión iniciada** durante la construcción. No hice login ni usé `--temporary`; se publicó después (ver "Publicación").
 - **Los cuatro componentes pegados en el encargo** (Spline, Scroll Morph, Arc Carousel, Background Paths) quedaron afuera, con su porqué en `DESIGN.md` §5.
 
 ## Resultados de QA
 
-### Lighthouse, mobile
+### Lighthouse, mobile, en local (antes de publicar)
 
 Medido sobre el build de producción servido en local con compresión (`next start`), con la caché de imágenes tibia.
 

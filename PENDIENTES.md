@@ -2,13 +2,10 @@
 
 Lo que necesita una acción o una decisión del equipo. Ordenado por urgencia.
 
-## Para poder publicar
+## Publicación
 
-1. **Falta `wrangler login`.** `npx wrangler whoami` dice que no hay sesión (lo revisé al empezar y de nuevo al final). No inicié sesión ni usé `--temporary`, como pedía el encargo. **El sitio no está publicado.** Para publicarlo:
-   - `npx wrangler login`
-   - `npm run deploy`
-   - El Worker se llama `fluxweb-v2`. No toca al sitio anterior (`fluxweb`).
-2. **URL pública.** `src/config/site.ts` tiene por defecto `https://fluxweb-v2.franciscoaybar2110.workers.dev`. Es una suposición: la real depende de la cuenta con la que se publique. Después del primer deploy, definir `NEXT_PUBLIC_SITE_URL` con la URL verdadera y volver a publicar (afecta a la canónica, el sitemap y las `og:image`).
+1. **Publicado el 13/11/2026** en https://fluxweb-v2.joaquinpugatrossero.workers.dev, como Worker `fluxweb-v2`, después de que Joaquín autorizara a Wrangler desde su navegador. En esa cuenta de Cloudflare no existe ningún Worker `fluxweb`: el sitio anterior vive en otra cuenta y no se tocó.
+2. **URL pública.** Ya es el valor por defecto de `src/config/site.ts` (canónica, sitemap y `og:image` verificados en vivo). Wrangler quedó con sesión iniciada en esta máquina; para cerrarla, `npx wrangler logout`.
 3. **`RESEND_API_KEY`.** Sin la clave, el formulario ofrece solo "Seguir por WhatsApp" (probado). Para sumar el envío por email: `npx wrangler secret put RESEND_API_KEY` y `npx wrangler secret put CONTACT_FROM_EMAIL` con un remitente de un dominio verificado en Resend.
 
 ## Para confirmar (lo escribí yo y habla por ustedes)
@@ -31,7 +28,7 @@ Lo que necesita una acción o una decisión del equipo. Ordenado por urgencia.
 
 14. **Safari real.** Probé con el WebKit de Playwright para Windows: portal, pieles, formulario y navegación andan bien y sin errores. Pero esa versión no tiene 3D acelerado, así que **el cilindro del hero se ve como una fila plana** en lugar de curva. En Safari de iPhone o de Mac debería verse curvo, pero no lo pude confirmar. Abrir el sitio en un iPhone y mirar el hero.
 15. **Android de gama media.** La fluidez la medí con el procesador frenado 4 veces en Chrome de escritorio, no en un teléfono real.
-16. **Lighthouse sobre la URL publicada.** Los números de `PROGRESO.md` son locales. En las páginas de caso el LCP simulado da 3,3 s (el observado es 0,5 s): conviene medir de nuevo ya publicado, con la compresión y la caché de Cloudflare.
+16. **LCP de las páginas de caso.** Medido ya sobre la URL publicada: 2,7 s simulado (1,2 a 1,4 s observado), contra los 2,5 s del criterio. Quedó a 0,2 s. El resto de los números en vivo está en `PROGRESO.md`.
 
 ## Quedó afuera
 

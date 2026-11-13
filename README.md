@@ -65,7 +65,7 @@ npx wrangler login
 npm run deploy
 ```
 
-Después del primer deploy, copiar la URL de `workers.dev` a `NEXT_PUBLIC_SITE_URL` y volver a publicar, para que la canónica y las `og:image` apunten al lugar correcto.
+Publicado desde el 13/11/2026 en **https://fluxweb-v2.joaquinpugatrossero.workers.dev**. Esa URL es el valor por defecto de `src/config/site.ts`; si el sitio pasa a otra dirección, definir `NEXT_PUBLIC_SITE_URL` y volver a publicar, para que la canónica y las `og:image` apunten al lugar correcto.
 
 ## Estructura
 
