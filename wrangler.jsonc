@@ -1,0 +1,36 @@
+/**
+ * Configuración del Worker de Cloudflare que sirve el sitio.
+ * El build lo genera @opennextjs/cloudflare en `.open-next/`:
+ *   npm run preview   -> build + vista previa local con el runtime de Workers
+ *   npm run deploy    -> build + publicación
+ *
+ * OJO: este Worker se llama `fluxweb-v2`. El sitio anterior es el Worker
+ * `fluxweb` y no se toca: no cambiar el nombre acá ni en WORKER_SELF_REFERENCE.
+ */
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "fluxweb-v2",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2025-09-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "fluxweb-v2"
+    }
+  ],
+  /* Optimización de next/image con Cloudflare Images. */
+  "images": {
+    "binding": "IMAGES"
+  },
+  "observability": {
+    "enabled": true
+  },
+  /* Las variables secretas (RESEND_API_KEY, CONTACT_FROM_EMAIL, CONTACT_TO_EMAIL)
+     se cargan con `wrangler secret put`, nunca acá. */
+  "vars": {}
+}

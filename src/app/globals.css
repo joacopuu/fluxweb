@@ -1,26 +1,536 @@
 @import "tailwindcss";
 
+/* ───────────────────────────────────────────────────────────────
+   Tokens de FluxWeb. Los valores salen de brand.json.
+   El sistema está documentado en DESIGN.md.
+   ─────────────────────────────────────────────────────────────── */
+
+/* Los colores de piel están registrados para que el cambio se interpole. */
+@property --bg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #14150e;
+}
+@property --bg-raise {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #1e1f16;
+}
+@property --ink {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #f0e9d6;
+}
+@property --muted {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #a3a58c;
+}
+@property --accent {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #b9bd7a;
+}
+@property --line {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(240, 233, 214, 0.14);
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Piel base: tinta y oliva */
+  --bg: #14150e;
+  --bg-raise: #1e1f16;
+  --ink: #f0e9d6;
+  --muted: #a3a58c;
+  --accent: #b9bd7a;
+  --line: rgba(240, 233, 214, 0.14);
+  --line-strong: color-mix(in srgb, var(--ink) 34%, transparent);
+  --on-accent: #14150e;
+
+  /* Constantes de marca (no cambian con la piel) */
+  --flux-ink: #14150e;
+  --flux-cream: #f0e9d6;
+  --flux-olive: #b9bd7a;
+  --wa-ok: #9fd18b;
+  --danger: #f0a08c;
+
+  /* Motion */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-skin: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-press: 140ms;
+  --dur-ui: 220ms;
+  --dur-move: 480ms;
+  --dur-reveal: 1000ms;
+  --dur-skin: 700ms;
+
+  /* Espacio */
+  --gutter: clamp(1.25rem, 5vw, 5rem);
+  --section: clamp(6rem, 14vw, 12rem);
+  --nav-h: 4.5rem;
+
+  --radius-s: 12px;
+  --radius-m: 20px;
+}
+
+/* ── Pieles ──────────────────────────────────────────────────────
+   `data-skin` aplica los valores. En <html> lo escribe el observador
+   de zonas (src/lib/zones.ts); en una página de caso también va en
+   <main> para que pinte bien desde el primer cuadro. */
+[data-skin="crema"] {
+  --bg: #f0e9d6;
+  --bg-raise: #f7f2e4;
+  --ink: #1b1c12;
+  --muted: #5a5b45;
+  --accent: #5a5b34;
+  --line: rgba(27, 28, 18, 0.14);
+  --on-accent: #f7f2e4;
+  --danger: #8f2d1c;
+}
+[data-skin="noche"] {
+  --bg: #23251a;
+  --bg-raise: #2c2f21;
+  --ink: #f0e9d6;
+  --muted: #b0b29a;
+  --accent: #cdd18d;
+  --line: rgba(240, 233, 214, 0.14);
+}
+[data-skin="oliva"] {
+  --bg: #b9bd7a;
+  --bg-raise: #cdd18d;
+  --ink: #14150e;
+  --muted: #3a3c2b;
+  --accent: #14150e;
+  --line: rgba(20, 21, 14, 0.2);
+  --on-accent: #f0e9d6;
+  --danger: #6b1f12;
+}
+[data-skin="mirande"] {
+  --bg: #2c3d45;
+  --bg-raise: #364a54;
+  --ink: #f0e4d4;
+  --muted: #b6c2c4;
+  --accent: #d9b382;
+  --line: rgba(240, 228, 212, 0.16);
+  --on-accent: #1f2b31;
+}
+[data-skin="beclean"] {
+  --bg: #06100f;
+  --bg-raise: #0c1c1a;
+  --ink: #eaf5f1;
+  --muted: #8fb0a8;
+  --accent: #5fe3c6;
+  --line: rgba(95, 227, 198, 0.16);
+  --on-accent: #06100f;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-raise: var(--bg-raise);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-on-accent: var(--on-accent);
+  --color-danger: var(--danger);
+  --font-display: var(--font-playfair), "Playfair Display", Georgia, serif;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", monospace;
+  --ease-expo: var(--ease-out-expo);
+  --ease-ui: var(--ease-out);
+  --ease-move: var(--ease-in-out);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ── Base ─────────────────────────────────────────────────────── */
+
+@layer base {
+
+html {
+  background: var(--bg);
+  color: var(--ink);
+  transition:
+    --bg var(--dur-skin) var(--ease-skin),
+    --bg-raise var(--dur-skin) var(--ease-skin),
+    --ink var(--dur-skin) var(--ease-skin),
+    --muted var(--dur-skin) var(--ease-skin),
+    --accent var(--dur-skin) var(--ease-skin),
+    --line var(--dur-skin) var(--ease-skin);
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: 5rem;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  overflow-x: clip;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+}
+
+/* Las clases propias van en la capa `components`: así las utilidades de
+   Tailwind (hidden, lg:block, etc.) siempre pueden pisarlas. */
+@layer components {
+/* ── Composición ──────────────────────────────────────────────── */
+
+.wrap {
+  width: 100%;
+  max-width: 110rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  padding-block: var(--section);
+}
+
+.grid-12 {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: clamp(1rem, 2vw, 2rem);
+}
+
+/* ── Tipografía ───────────────────────────────────────────────── */
+
+.t-mega,
+.t-display,
+.t-title,
+.t-sub {
+  font-family: var(--font-display);
+  font-weight: 500;
+  text-wrap: balance;
+}
+.t-mega {
+  font-size: clamp(2.9rem, 12.4vw, 10.5rem);
+  line-height: 0.94;
+  letter-spacing: -0.035em;
+}
+.t-display {
+  font-size: clamp(2.4rem, 6.4vw, 6rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.t-title {
+  font-size: clamp(2rem, 4.4vw, 4rem);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+}
+.t-sub {
+  font-size: clamp(1.45rem, 2.7vw, 2.5rem);
+  line-height: 1.14;
+  letter-spacing: -0.02em;
+}
+/* La palabra clave: cursiva y en acento. Una por titular. */
+.t-mega em,
+.t-display em,
+.t-title em,
+.t-sub em {
+  font-style: italic;
+  color: var(--accent);
+  /* La cursiva de Playfair sobresale: un pelo de aire evita que la máscara la corte. */
+  padding-inline-end: 0.06em;
+}
+/* Dentro de un caso los titulares hablan como el cliente: en sans. */
+.t-client {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: clamp(2.6rem, 7.4vw, 7rem);
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+  text-wrap: balance;
+}
+.t-client-sub {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 2.8vw, 2.6rem);
+  line-height: 1.06;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+.t-lead {
+  font-size: clamp(1.0625rem, 1.45vw, 1.375rem);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+.t-body {
+  font-size: 1rem;
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+.t-small {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.t-mono {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  font-feature-settings: "tnum";
+}
+.measure {
+  max-width: 62ch;
+}
+
+/* ── Enlaces y botones ────────────────────────────────────────── */
+
+/* Subrayado que se dibuja de izquierda a derecha. */
+.link {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  padding-bottom: 2px;
+  transition: background-size var(--dur-move) var(--ease-out-expo);
+}
+.link-on {
+  background-size: 100% 1px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .link:hover {
+    background-size: 100% 1px;
+  }
+  .link-on:hover {
+    animation: link-redraw 620ms var(--ease-out-expo);
+  }
+}
+@keyframes link-redraw {
+  0% {
+    background-size: 100% 1px;
+    background-position: 100% 100%;
+  }
+  45% {
+    background-size: 0% 1px;
+    background-position: 100% 100%;
+  }
+  46% {
+    background-size: 0% 1px;
+    background-position: 0 100%;
+  }
+  100% {
+    background-size: 100% 1px;
+    background-position: 0 100%;
+  }
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 3rem;
+  padding: 0.75rem 1.4rem;
+  border-radius: 999px;
+  font-weight: 500;
+  font-size: 0.9875rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    transform var(--dur-press) var(--ease-out),
+    background-color var(--dur-ui) ease,
+    border-color var(--dur-ui) ease,
+    color var(--dur-ui) ease;
+}
+.btn:active {
+  transform: scale(0.97);
+}
+.btn-primary {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.btn-ghost {
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover {
+    background: color-mix(in srgb, var(--accent) 86%, var(--ink));
+  }
+  .btn-ghost:hover {
+    border-color: var(--ink);
+  }
+}
+.btn[disabled] {
+  opacity: 0.55;
+  cursor: default;
+}
+
+/* ── Reveals ──────────────────────────────────────────────────── */
+
+/* Titular del hero: palabras que suben desde una máscara. CSS puro, para no
+   esperar a JavaScript. */
+.rise {
+  display: inline-block;
+  overflow-x: visible;
+  overflow-y: clip;
+  vertical-align: bottom;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.rise > span {
+  display: inline-block;
+  transform: translateY(112%);
+  animation: rise var(--dur-reveal) var(--ease-out-expo) forwards;
+  animation-delay: calc(var(--i, 0) * 55ms + var(--d, 0ms));
+}
+@keyframes rise {
+  to {
+    transform: translateY(0);
+  }
+}
+.fade-in {
+  opacity: 0;
+  animation: fade-in 700ms var(--ease-out) forwards;
+  animation-delay: var(--d, 0ms);
+}
+@keyframes fade-in {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Imágenes que se destapan con clip-path al entrar en pantalla. */
+.unveil {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 1100ms var(--ease-out-expo);
+}
+.unveil[data-seen="true"],
+.no-js .unveil {
+  clip-path: inset(0 0 0 0);
+}
+
+}
+
+/* ── Grano ────────────────────────────────────────────────────── */
+
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.4 -0.2'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+}
+[data-skin="crema"] .grain,
+[data-skin="oliva"] .grain {
+  filter: invert(1);
+  opacity: 0.07;
+}
+
+/* ── Transiciones de página ───────────────────────────────────── */
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 320ms;
+  animation-timing-function: var(--ease-out);
+}
+::view-transition-group(.morph) {
+  animation-duration: 640ms;
+  animation-timing-function: var(--ease-in-out);
+}
+::view-transition-image-pair(.morph) {
+  animation-name: via-blur;
+  animation-duration: 640ms;
+}
+@keyframes via-blur {
+  35% {
+    filter: blur(3px);
+  }
+}
+
+/* ── Campo trampa del formulario ──────────────────────────────── */
+/* Fuera de pantalla, no `display: none`: los bots lo completan igual. */
+.hp {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* ── Movimiento reducido ──────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    transition-duration: 200ms;
+  }
+  .rise > span {
+    transform: none;
+    animation: fade-in 200ms ease forwards;
+    opacity: 0;
+  }
+  .unveil {
+    clip-path: none;
+    transition: none;
+  }
+  .link,
+  .btn {
+    transition-duration: 1ms;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 180ms !important;
+    animation-name: none;
+  }
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Máscaras de SplitText: aire para descendentes y para la cursiva. */
+.sl-mask {
+  padding-bottom: 0.16em;
+  margin-bottom: -0.16em;
+  padding-inline-end: 0.08em;
+}
+
+.skip {
+  position: fixed;
+  left: 1rem;
+  top: 1rem;
+  z-index: 80;
+  transform: translateY(-200%);
+  background: var(--accent);
+  color: var(--on-accent);
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  font-weight: 500;
+}
+.skip:focus-visible {
+  transform: translateY(0);
 }
