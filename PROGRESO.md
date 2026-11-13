@@ -12,9 +12,9 @@ La sesión se cortó dos veces por el límite de uso de la cuenta. No son tiempo
 | Pausa por límite de uso | 02:37 a 05:51 | |
 | 2 | 05:51 a 06:28 | 37 min |
 | Pausa por límite de uso | 06:28 a 11:07 | |
-| 3 | 11:07 a 12:10 aprox. | 63 min |
+| 3 | 11:07 a 11:55 | 48 min |
 
-**Tiempo trabajado: unas 2 horas**, de las 4 y media del encargo. **Reloj de pared: casi 10 horas**, por las pausas. El tope original (06:47) se pasó por las pausas, no por el trabajo.
+**Tiempo trabajado: 1 hora y 45 minutos**, de las 4 y media del encargo. **Reloj de pared: casi 10 horas**, por las pausas. El tope original (06:47) se pasó por las pausas, no por el trabajo.
 
 ## Fases
 
@@ -25,7 +25,7 @@ La sesión se cortó dos veces por el límite de uso de la cuenta. No son tiempo
 | Base | 05:52 | Proyecto, tokens, tipografías, nav, footer y hero. Primer commit y push. **Sin deploy:** no hay sesión de Wrangler. |
 | Construcción | 06:05 | Home completa (portal, casos, servicios, público, proceso, estudio, preguntas, contacto), páginas de caso, privacidad, 404, `og:image`, sitemap, robots, íconos. Formulario y ruta de envío. |
 | Motion, pulido y performance | 11:30 | De 52 a 100 en performance de Lighthouse en la home. Prueba en WebKit. Revisión de marca, de página y de robustez. |
-| QA y entrega | 12:10 | Tercer caso (`/trabajos/fluxweb`), Lighthouse final, documentación. |
+| QA y entrega | 11:55 | Tercer caso (`/trabajos/fluxweb`), Lighthouse final, documentación. |
 
 ## Hallazgos de la inmersión
 
