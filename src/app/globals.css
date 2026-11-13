@@ -160,6 +160,9 @@ html {
     --line var(--dur-skin) var(--ease-skin);
   -webkit-text-size-adjust: 100%;
   scroll-padding-top: 5rem;
+  /* La base crece un poco en monitores grandes, para que el texto chico no
+     quede diminuto a 1920 px o más. Respeta el tamaño que elija el usuario. */
+  font-size: clamp(100%, 0.5rem + 0.6vw, 125%);
 }
 
 body {
@@ -236,6 +239,8 @@ html.lenis body {
   font-family: var(--font-display);
   font-weight: 500;
   text-wrap: balance;
+  /* Un nombre largo de una sola palabra se corta antes que desbordar. */
+  overflow-wrap: break-word;
 }
 .t-mega {
   font-size: clamp(2.9rem, 12.4vw, 10.5rem);
@@ -253,7 +258,7 @@ html.lenis body {
   letter-spacing: -0.025em;
 }
 .t-sub {
-  font-size: clamp(1.45rem, 2.7vw, 2.5rem);
+  font-size: clamp(1.45rem, 3.1vw, 2.5rem);
   line-height: 1.14;
   letter-spacing: -0.02em;
 }
@@ -275,6 +280,7 @@ html.lenis body {
   line-height: 0.95;
   letter-spacing: -0.05em;
   text-wrap: balance;
+  overflow-wrap: break-word;
 }
 .t-client-sub {
   font-family: var(--font-sans);

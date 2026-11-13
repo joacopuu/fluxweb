@@ -181,9 +181,9 @@ export const cases: CaseStudy[] = [
       "Página 404 diseñada",
     ],
     seo: {
-      title: "Mirande Aybar: un catálogo inmobiliario con base de datos propia",
+      title: "Caso Mirande Aybar: catálogo inmobiliario a medida",
       description:
-        "Cómo le hicimos a una inmobiliaria de Villa General Belgrano un catálogo propio, con filtros en vivo, fichas con galería y consultas por WhatsApp con el mensaje armado.",
+        "Un catálogo propio para una inmobiliaria de Villa General Belgrano: filtros en vivo, fichas con galería y consultas por WhatsApp con el mensaje armado.",
     },
   },
   {
@@ -311,7 +311,7 @@ export const cases: CaseStudy[] = [
       "Pedido de cotización",
     ],
     seo: {
-      title: "BeClean: una landing que explica un producto técnico en 30 segundos",
+      title: "Caso BeClean: landing de un producto técnico",
       description:
         "Cómo armamos la landing de las tabletas efervescentes de Laboratorio Pyam: la tableta en 3D, el problema en tres capítulos y el ensayo EN 13697 en pantalla.",
     },

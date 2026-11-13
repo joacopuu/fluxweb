@@ -10,7 +10,7 @@ import { WaLink } from "@/components/ui/wa-link";
 
 function Column({ title, children, wide }: { title: string; children: React.ReactNode; wide?: boolean }) {
   return (
-    <div className={wide ? "max-md:col-span-2" : undefined}>
+    <div className={wide ? "max-sm:col-span-2" : undefined}>
       <h3 className="t-small mb-4 font-medium text-muted">{title}</h3>
       <ul className="flex flex-col gap-2.5 text-[0.9375rem]">{children}</ul>
     </div>
@@ -38,7 +38,7 @@ export function Footer() {
           </Link>
         </div>
 
-        <div className="mt-[clamp(4rem,10vw,8rem)] grid grid-cols-2 gap-x-6 gap-y-12 border-t border-line pt-10 md:grid-cols-4">
+        <div className="mt-[clamp(4rem,10vw,8rem)] grid grid-cols-2 gap-x-6 gap-y-12 border-t border-line pt-10 lg:grid-cols-4">
           <Column title="Sitio">
             {navLinks.map((item) => (
               <li key={item.href}>
@@ -80,7 +80,7 @@ export function Footer() {
           </Column>
           <Column title="Contacto" wide>
             <li>
-              <a href={`mailto:${site.email}`} className="link">
+              <a href={`mailto:${site.email}`} className="link [overflow-wrap:anywhere]">
                 {site.email}
               </a>
             </li>
@@ -97,7 +97,7 @@ export function Footer() {
           </Column>
         </div>
 
-        <div className="mt-14 flex flex-col gap-4 text-[0.875rem] md:flex-row md:items-center md:justify-between">
+        <div className="mt-14 flex flex-col gap-4 text-[0.875rem] lg:flex-row lg:items-center lg:justify-between">
           <p className="flex items-center gap-2.5">
             <Mark className="h-5 w-auto" />
             <span className="font-display text-[1.0625rem] italic">{site.tagline}</span>

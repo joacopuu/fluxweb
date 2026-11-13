@@ -152,7 +152,7 @@ export function ContactForm() {
     const firstName = answers.name.trim().split(" ")[0];
     return (
       <div role="status" className="swap-in flex min-h-[26rem] flex-col justify-center">
-        <p className="t-title">
+        <p className="t-title [overflow-wrap:anywhere]">
           Listo, {firstName}. <em>Ya lo tenemos.</em>
         </p>
         <p className="t-lead mt-5 max-w-[40ch] text-muted">

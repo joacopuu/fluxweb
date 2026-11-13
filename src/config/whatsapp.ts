@@ -54,6 +54,9 @@ export type BriefAnswers = {
 
 /** Resumen del formulario, para seguir la charla por WhatsApp. */
 export function briefMessage(a: BriefAnswers) {
+  // El enlace de WhatsApp tiene un largo práctico: el problema va resumido.
+  const problem = a.problem.trim();
+  const short = problem.length > 700 ? `${problem.slice(0, 700).trimEnd()}…` : problem;
   return [
     `Hola FluxWeb, soy ${a.name}. Completé el formulario del sitio:`,
     "",
@@ -61,7 +64,7 @@ export function briefMessage(a: BriefAnswers) {
     `Etapa: ${a.stage}.`,
     `Para cuándo: ${a.when}.`,
     "",
-    `El problema que quiero resolver: ${a.problem}`,
+    `El problema que quiero resolver: ${short}`,
     "",
     `Mi contacto: ${a.contact}`,
   ].join("\n");

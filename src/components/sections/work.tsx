@@ -9,12 +9,17 @@ import { Drift, Unveil } from "@/components/ui/scroll-fx";
 import { WaLink } from "@/components/ui/wa-link";
 import { cn } from "@/lib/utils";
 
+const countWords = ["", "Un", "Dos", "Tres", "Cuatro", "Cinco", "Seis", "Siete", "Ocho"];
+
 /** Lo que se ve al salir del portal: la tesis de la sección. */
 export function WorkIntro() {
+  // El número sale de los casos cargados: al sumar uno, el titular lo cuenta.
+  const live = cases.filter((item) => item.live).length;
   return (
     <div className="mx-auto w-full max-w-[110rem]">
       <h2 className="t-display max-w-[16ch]">
-        Dos sitios en línea. No se parecen entre sí, y ninguno se parece a <em>nosotros</em>.
+        {countWords[live] ?? live} sitios en línea. No se parecen entre sí, y ninguno se parece a{" "}
+        <em>nosotros</em>.
       </h2>
       <p className="t-lead mt-8 max-w-[44ch] lg:ml-[41.666%]">
         Mirande es pizarra y crema, con fotos del valle. BeClean es verde petróleo y menta, con una

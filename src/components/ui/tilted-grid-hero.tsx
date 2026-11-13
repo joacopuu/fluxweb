@@ -343,7 +343,9 @@ export function TiltedGridHero({
     `@keyframes ${orbit}{from{transform:${turn(-sweep)}}to{transform:${turn(sweep)}}}` +
     // Con movimiento reducido se pausa en vez de quitarse: cada baldosa ya
     // está ubicada por su retraso negativo, así que queda una imagen fija.
-    `@media(prefers-reduced-motion:reduce){.${tile}{animation-play-state:paused}}`;
+    // `!important`: el `animation` en línea de cada baldosa pisaba esta regla y
+    // con movimiento reducido la fila seguía corriendo.
+    `@media(prefers-reduced-motion:reduce){.${tile}{animation-play-state:paused!important}}`;
 
   const share = aspectRatio / SLICES;
   const mask = `linear-gradient(90deg,transparent,#000 ${fade}%,#000 ${100 - fade}%,transparent)`;

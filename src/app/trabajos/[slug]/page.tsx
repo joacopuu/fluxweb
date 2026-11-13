@@ -44,8 +44,11 @@ function Framed({ shot, host, sizes, priority }: { shot: Shot; host: string; siz
         width={shot.width}
         height={shot.height}
         sizes={sizes}
-        priority={priority}
-        quality={80}
+        // Next 16: `preload` reemplaza a `priority`. Solo la captura principal.
+        preload={priority}
+        fetchPriority={priority ? "high" : undefined}
+        loading={priority ? "eager" : undefined}
+        quality={priority ? 70 : 80}
         className="block h-auto w-full"
       />
     </BrowserFrame>
@@ -235,10 +238,12 @@ export default async function CasePage({ params }: PageProps<"/trabajos/[slug]">
             <WhatsAppGlyph className="h-5 w-5" />
             Contanos el tuyo
           </WaLink>
-          <Link href={`/trabajos/${next.slug}`} className="link link-on inline-flex items-center gap-2">
-            Siguiente caso: {next.name}
-            <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
-          </Link>
+          {next.slug !== item.slug ? (
+            <Link href={`/trabajos/${next.slug}`} className="link link-on inline-flex items-center gap-2">
+              Siguiente caso: {next.name}
+              <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+            </Link>
+          ) : null}
         </div>
       </section>
 

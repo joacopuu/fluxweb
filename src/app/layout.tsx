@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     template: "%s · FluxWeb",
   },
   description:
-    "Tenés la idea. Nosotros la convertimos en una web que se siente tuya. Somos un estudio de Córdoba: diseñamos y programamos desde cero landings, catálogos con base de datos, tiendas y portfolios.",
+    "Estudio de diseño y desarrollo web de Córdoba. Diseñamos y programamos desde cero landings, catálogos con base de datos, tiendas y portfolios.",
   applicationName: site.name,
   authors: [{ name: site.name, url: site.url }],
   alternates: { canonical: "/" },

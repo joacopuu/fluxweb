@@ -63,10 +63,9 @@ export function Hero() {
         </h1>
 
         <div className="grid-12 mt-[clamp(1.5rem,4svh,3rem)] items-end gap-y-6">
-          <p
-            className="t-body fade-in col-span-12 max-w-[34rem] text-muted md:col-span-6 lg:col-span-4"
-            style={{ "--d": "700ms" } as React.CSSProperties}
-          >
+          {/* Sin animación de entrada: es el texto que dice qué somos, y tiene que
+              estar desde el primer cuadro. */}
+          <p className="t-body col-span-12 max-w-[34rem] text-muted md:col-span-6 lg:col-span-4">
             FluxWeb es un estudio de diseño y desarrollo web de Córdoba.{" "}
             <span className="max-sm:hidden">
               Somos tres, y cada sitio lo diseñamos y lo programamos desde cero.
